@@ -22,10 +22,6 @@ Make sure you have the correct Ruby version. You'll find it both in .ruby-versio
 
 ```sh
 bundle install
-rails s
-```
-
-```sh
 bundle exec rake db:migrate
 rails s
 ```
