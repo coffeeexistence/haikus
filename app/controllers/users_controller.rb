@@ -1,10 +1,14 @@
 class UsersController < ApplicationController
+  def new
+    @user = User.new
+  end
+  
   def create
-    user = User.new(user_params)
-    if user.save
-      render json: user
+    @user = User.new(user_params)
+    if @user.save
+      redirect_to root_url, :notice => "Signed up!"
     else
-     render json: '400', status: 400
+      render "new"
     end
   end
 
@@ -18,6 +22,6 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.permit(:email, :password)
+    params.require(:user).permit(:email, :password)
   end
 end

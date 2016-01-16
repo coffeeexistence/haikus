@@ -11,14 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151108015215) do
-
-  create_table "api_keys", force: :cascade do |t|
-    t.string   "access_token"
-    t.integer  "user_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
-  end
+ActiveRecord::Schema.define(version: 20151012015539) do
 
   create_table "haikus", force: :cascade do |t|
     t.datetime "created_at", null: false
