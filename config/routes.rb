@@ -1,10 +1,13 @@
 Rails.application.routes.draw do
-  get '/ping' => 'main#ping'
-  resources :haikus, constraints: {format: :json} do
-    resources :lines, only: [:index, :create, :update, :show, :destroy], constraints: {format: :json}
+  get "sign_up" => "users#new", :as => "sign_up"
+  get "log_in" => "sessions#new", :as => "log_in"
+  get "log_out" => "sessions#destroy", :as => "log_out"
+
   root :to => "main#index"
+  resources :haikus do
+    resources :lines, only: [:index, :create, :update, :show, :destroy]
   end
-  resources :users, only: [:create, :destroy]
-  resources :api_keys, only: :create
   resources :main, only: [:index]
+  resources :users, only: [:new, :create, :destroy]
+  resources :sessions, only: [:create, :new, :destroy]
 end
