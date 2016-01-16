@@ -25,9 +25,9 @@ bundle install
 rails s
 ```
 
-###Verify install:
 ```sh
-curl http://localhost:3000/ping
+bundle exec rake db:migrate
+rails s
 ```
 
 ###Test Coverage
