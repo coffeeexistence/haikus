@@ -24,3 +24,6 @@ group :production do
   gem 'capistrano-rvm'
 end
 
+group :test do
+  gem 'database_cleaner'
+end
