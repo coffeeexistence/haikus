@@ -3,5 +3,19 @@
 }
 
 #user_nav {
-  margin-left: 15px;
+  text-align: right;
+  margin-top: 2em;
 }
+
+#user_nav ul li {
+  display: inline-block;
+}
+
+#user_nav ul li a {
+  text-decoration: none;
+  padding: 0.75em 2em;
+}
+
+.u-full-width {
+  width: 100%;
+  box-sizing: border-box; }
