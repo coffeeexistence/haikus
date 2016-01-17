@@ -1,0 +1,8 @@
+<h1>haikus#new page</h1>
+
+<%= form_for @haiku do |haiku_form| %>
+  <%= haiku_form.fields_for :lines do |line_form| %>
+    <%= line_form.text_field :content %>
+  <% end %>
+  <%= haiku_form.submit %>
+<% end %>
