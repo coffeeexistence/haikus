@@ -1,4 +1,5 @@
 class HaikusController < ApplicationController
+  before_action :require_login, only: [:create]
 
   def new
     @haiku = Haiku.new
@@ -14,11 +15,15 @@ class HaikusController < ApplicationController
     end
   end
 
-
   private
 
   def haiku_params
     params.require(:haiku).permit(lines_attributes: [:content])
   end
 
+  def require_login
+    unless logged_in?
+      redirect_to log_in_url, notice: "Log in to create a Haiku!"
+    end
+  end
 end
