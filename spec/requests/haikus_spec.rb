@@ -24,6 +24,8 @@ describe "haikus", type: :request do
         }.to change(Haiku, :count).by(1)
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(root_url)
+
+        expect(Haiku.last.lines.first.user.email).to eq(user.email)
       end
 
       it 'should not add a new haiku without line content' do

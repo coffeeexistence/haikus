@@ -19,3 +19,5 @@
 # Ignore simplecov generated files
 /public/coverage
 /spec/simplecov
+
+.byebug_history

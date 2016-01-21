@@ -8,6 +8,7 @@ class HaikusController < ApplicationController
 
   def create
     @haiku = Haiku.new(haiku_params)
+    @haiku.lines.last.user = current_user
     if @haiku.save
       redirect_to root_url, notice: "Haiku created!"
     else
