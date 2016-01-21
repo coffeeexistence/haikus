@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   root :to => "main#index"
   resources :haikus do
-    resources :lines, only: [:index, :create, :update, :show, :destroy]
+    resources :lines, only: [:index, :new, :create, :update, :show, :destroy]
   end
   resources :main, only: [:index]
   resources :users, only: [:new, :create, :destroy]

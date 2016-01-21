@@ -1,0 +1,13 @@
+<h1>haikus#line page</h1>
+
+<% @haiku.lines.each do |line| %>
+  <li><%= line.content %></li>
+<% end %>
+
+<% if @count < 3 %>
+  <%= form_for @line, url: haiku_lines_path do |f| %>
+    <%= f.label :content %>
+    <%= f.text_field :content, class: 'u-full-width', placeholder: "Line #{@count.next}" %>
+    <%= f.submit "Create Line", class: 'button-primary' %>
+  <% end %>
+<% end %>
