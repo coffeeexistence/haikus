@@ -4,12 +4,20 @@ class LinesController < ApplicationController
     render json: lines, each_serializer: LineSerializer
   end
 
+  def new
+    @haiku = Haiku.find(params[:haiku_id])
+    @count = @haiku.lines.count
+    @line = Line.new
+  end
+
   def create
-    line = Line.new(line_params)
-    if line.save
-      render json: line, status: 201
+    @line = Line.new(line_params.merge({haiku_id: params[:haiku_id]}))
+    if @line.save
+      redirect_to root_url, notice: "Haiku line created!"
     else
-      render json: '400', status: 400
+      @haiku = Haiku.find(params[:haiku_id])
+      @count = @haiku.lines.count
+      render 'new'
     end
   end
 
@@ -36,7 +44,7 @@ class LinesController < ApplicationController
   private
 
   def line_params
-    params.permit(:haiku_id, :content)
+    params.require(:line).permit(:content)
   end
 end
 
