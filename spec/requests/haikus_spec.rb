@@ -29,11 +29,12 @@ describe "haikus", type: :request do
       end
 
       it 'should not add a new haiku without line content' do
+        post '/sessions', params
+        expect(response.code).to eq('302')
         expect {
-          post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=>"An afternoon breeze"}}}
+          post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=> nil}}}
         }.to change(Haiku, :count).by(0)
-        expect(response).to have_http_status(302)
-        expect(response).to redirect_to(log_in_url)
+        expect(response).to have_http_status(200)
       end
     end
 
@@ -48,7 +49,7 @@ describe "haikus", type: :request do
 
       it 'should not add a new haiku without line content' do
         expect {
-          post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=>"An afternoon breeze"}}}
+          post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=> nil}}}
         }.to change(Haiku, :count).by(0)
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(log_in_url)
