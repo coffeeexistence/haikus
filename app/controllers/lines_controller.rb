@@ -1,4 +1,6 @@
 class LinesController < ApplicationController
+  before_action :require_login, only: [:create]
+
   def index
     lines = Line.eager_load(:haiku).where("haiku_id = ?", params[:haiku_id])
     render json: lines, each_serializer: LineSerializer

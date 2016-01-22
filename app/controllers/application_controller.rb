@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  helper_method :current_user, :logged_in?
+  helper_method :current_user
   
   private
   
@@ -10,5 +10,11 @@ class ApplicationController < ActionController::Base
 
   def logged_in?
     current_user != nil
+  end
+
+  def require_login
+    unless logged_in?
+      redirect_to log_in_url, notice: "Log in to create a Haiku!"
+    end
   end
 end
