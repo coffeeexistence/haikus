@@ -5,6 +5,14 @@ describe "haikus", type: :request do
   let!(:user) { FactoryGirl.create(:user) }
   let(:params) {{ email: user.email, password: user.password } }
 
+  describe 'reading haikus' do
+    it "should render haikus index template" do
+      get '/haikus'
+      expect(response).to have_http_status(200)
+      expect(response).to render_template('index')
+    end
+  end
+
   describe 'writing haiku' do
     it "should render the html" do
       get '/haikus/new'
