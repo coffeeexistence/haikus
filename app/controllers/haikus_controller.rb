@@ -1,6 +1,10 @@
 class HaikusController < ApplicationController
   before_action :require_login, only: [:create]
 
+  def index
+    @haikus = Haiku.all
+  end
+
   def new
     @haiku = Haiku.new
     @haiku.lines.build
