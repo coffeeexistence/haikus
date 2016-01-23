@@ -32,6 +32,14 @@ describe "lines", type: :request do
         }.to change(Line, :count).by(0)
         expect(response).to have_http_status(200)
       end
+
+      it "should add the current user's id to the lines table" do
+        post '/sessions', params
+        expect {
+          post "/haikus/#{haiku.id}/lines", "line" => { "content" => "another line" }
+        }.to change(Line, :count).by(1)
+        expect(Line.last.user).not_to be_nil
+      end      
     end
   end
 
