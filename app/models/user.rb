@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
-  
+  has_many :friendships
+  has_many :friends, :through => :friendships
+
   attr_accessor :password
   validates_confirmation_of :password
   validates_presence_of :password, :on => :create
