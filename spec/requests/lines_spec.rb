@@ -61,6 +61,11 @@ describe "lines", type: :request do
         post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
         expect(response).to render_template(:new)
       end 
+
+      it 'should display an error message' do
+        post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
+        expect(response.body).to include('Error. You must be logged in and line cannot be blank')
+      end
     end
   end
 
