@@ -21,6 +21,8 @@ describe "lines", type: :request do
     end
 
     describe 'POST /haikus/:id/lines' do
+      before(:each) { post '/sessions', params }
+      
       it "should create a new line" do
         expect {
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "second line" }
