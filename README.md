@@ -32,4 +32,3 @@ Every time you run tests locally, you will also regenerate Simplecov coverage do
 
 To view test coverage docs, visit <hostname>/coverage/index.html
 
-
