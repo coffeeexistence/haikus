@@ -16,6 +16,7 @@ class LinesController < ApplicationController
     if @line.save
       redirect_to root_url, notice: "Haiku line created!"
     else
+      flash[:error] = 'Error. You must be logged in and line cannot be blank'
       @count = @haiku.lines.count
       render 'new'
     end

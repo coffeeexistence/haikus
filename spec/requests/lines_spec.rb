@@ -54,6 +54,11 @@ describe "lines", type: :request do
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(root_url)
       end
+
+      it 'should stay on the new line page when a line is not created' do
+        post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
+        expect(response).to render_template(:new)
+      end 
     end
   end
 
