@@ -60,7 +60,7 @@ describe "lines", type: :request do
       it 'should stay on the new line page when a line is not created' do
         post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
         expect(response).to render_template(:new)
-      end 
+      end
 
       it 'should display an error message' do
         post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
