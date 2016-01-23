@@ -12,7 +12,7 @@ describe "user", type: :request do
   it "should create a user" do
     post '/users', params
     expect(response.code).to eq("302")
-    response.should redirect_to(root_path)
+    expect(response).to redirect_to(root_path)
     e = params[:user][:email]
     expect(User.where(email: e).first.email).to eq(e)
   end

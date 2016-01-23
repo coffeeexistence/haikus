@@ -1,0 +1,14 @@
+<h1>haikus#index page</h1>
+<div class="row">
+  <div class="six columns">
+    <h3>my haikus</h3>
+  </div>
+  <div class="six columns">
+    <h3>all haikus</h3>
+    <ul>
+    <% @haikus.each do |haiku| %>
+      <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li>
+    <% end %>
+    </ul>
+  </div>
+</div>

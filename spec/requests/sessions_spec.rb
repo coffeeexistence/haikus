@@ -12,6 +12,6 @@ describe "sessions", type: :request do
   it "should create a session" do
     post '/sessions', params
     expect(response.code).to eq("302")
-    response.should redirect_to(root_path)
+    expect(response).to redirect_to(root_path)
   end
 end
