@@ -64,7 +64,7 @@ describe "lines", type: :request do
 
       it 'should display an error message' do
         post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
-        expect(response.body).to include('Error. You must be logged in and line cannot be blank')
+        expect(response.body).to include("Content can&#39;t be blank")
       end
     end
   end
