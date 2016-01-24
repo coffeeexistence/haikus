@@ -29,8 +29,6 @@ describe "user", type: :request do
     context 'existing user' do
       it 'saves a forgot password uuid to the user' do
         patch '/enter_email', forgot_password_params
-        puts "**existing_user**"
-        puts existing_user.inspect
         expect(User.find_by(email: existing_user.email).forgot_password_uuid).not_to be_nil
       end
 
