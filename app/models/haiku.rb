@@ -6,4 +6,8 @@ class Haiku < ActiveRecord::Base
   def title
     lines.first.content
   end
+
+  def lines_count_valid?
+    lines.count < 3
+  end
 end

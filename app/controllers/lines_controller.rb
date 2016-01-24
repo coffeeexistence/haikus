@@ -8,12 +8,14 @@ class LinesController < ApplicationController
   end
 
   def create
-    @line = Line.new(line_params.merge({ haiku_id: params[:haiku_id] }))
+    @haiku = Haiku.find(params[:haiku_id])
+    redirect_to root_url, notice: "No more than three lines!" and return unless @haiku.lines_count_valid?
+
+    @line = @haiku.lines.build(line_params)
     @line.user = current_user
     if @line.save
       redirect_to root_url, notice: "Haiku line created!"
     else
-      @haiku = Haiku.find(params[:haiku_id])
       @count = @haiku.lines.count
       render 'new'
     end
