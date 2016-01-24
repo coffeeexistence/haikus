@@ -15,6 +15,7 @@ describe "lines", type: :request do
   end
 
   context 'when logged in' do
+
     describe 'POST /haikus/:id/lines' do
       it "should create a new line" do
         post '/sessions', params
@@ -39,6 +40,19 @@ describe "lines", type: :request do
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "another line" }
         }.to change(Line, :count).by(1)
         expect(Line.last.user).not_to be_nil
+      end
+
+      let!(:haiku_with_lines) { FactoryGirl.create(:haiku_with_lines) }
+      it 'should not add more than 3 lines' do
+        post '/sessions', params
+        expect(haiku_with_lines.lines.count).to eq(3)
+        expect(haiku_with_lines).to_not be_lines_count_valid
+        expect {
+          post "/haikus/#{haiku_with_lines.id}/lines", "line" => { "content" => "fourth line" }
+        }.to change(Line, :count).by(0)
+        expect(haiku_with_lines.lines.count).to eq(3)
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(root_url)
       end
     end
   end
