@@ -5,7 +5,7 @@ describe "lines", type: :request do
   let!(:haiku) { FactoryGirl.create(:haiku) }
   let!(:user) { FactoryGirl.create(:user) }
   let(:params) {{ email: user.email, password: user.password } }
-  
+
   describe "haikus new page" do
     it "should render the lines new page" do
       get "/haikus/#{haiku.id}/lines/new"
@@ -24,7 +24,7 @@ describe "lines", type: :request do
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(root_url)
       end
-    
+
       it 'should not create a blank line' do
         post '/sessions', params
         expect {
@@ -39,7 +39,7 @@ describe "lines", type: :request do
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "another line" }
         }.to change(Line, :count).by(1)
         expect(Line.last.user).not_to be_nil
-      end      
+      end
     end
   end
 
@@ -52,7 +52,7 @@ describe "lines", type: :request do
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(log_in_url)
       end
-    
+
       it 'should not create a blank line' do
         expect {
           post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
