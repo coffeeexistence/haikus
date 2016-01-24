@@ -4,7 +4,7 @@ describe "lines", type: :request do
 
   let!(:haiku) { FactoryGirl.create(:haiku) }
   let!(:user) { FactoryGirl.create(:user) }
-  let(:params) {{ email: user.email, password: user.password } }
+  let(:login_params) {{ email: user.email, password: user.password } }
 
   describe "haikus new page" do
     it "should render the lines new page" do
@@ -15,10 +15,13 @@ describe "lines", type: :request do
   end
 
   context 'when logged in' do
+    before do
+      post '/sessions', login_params
+      expect(response).to have_http_status(302)
+    end
 
     describe 'POST /haikus/:id/lines' do
       it "should create a new line" do
-        post '/sessions', params
         expect {
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "second line" }
         }.to change(Line, :count).by(1)
@@ -27,7 +30,6 @@ describe "lines", type: :request do
       end
 
       it 'should not create a blank line' do
-        post '/sessions', params
         expect {
           post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
         }.to change(Line, :count).by(0)
@@ -35,7 +37,6 @@ describe "lines", type: :request do
       end
 
       it "should add the current user's id to the lines table" do
-        post '/sessions', params
         expect {
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "another line" }
         }.to change(Line, :count).by(1)
@@ -44,7 +45,6 @@ describe "lines", type: :request do
 
       let!(:haiku_with_lines) { FactoryGirl.create(:haiku_with_lines) }
       it 'should not add more than 3 lines' do
-        post '/sessions', params
         expect(haiku_with_lines.lines.count).to eq(3)
         expect(haiku_with_lines).to_not be_lines_count_valid
         expect {
