@@ -13,7 +13,8 @@ class LinesController < ApplicationController
   end
 
   def create
-    @line = Line.new(line_params.merge({haiku_id: params[:haiku_id]}))
+    @line = Line.new(line_params.merge({ haiku_id: params[:haiku_id] }))
+    @line.user = current_user
     if @line.save
       redirect_to root_url, notice: "Haiku line created!"
     else
