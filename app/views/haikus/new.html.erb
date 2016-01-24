@@ -1,8 +1,23 @@
 <h1>haikus#new page</h1>
 
-<%= form_for @haiku do |haiku_form| %>
-  <%= haiku_form.fields_for :lines do |line_form| %>
-    <%= line_form.text_field :content, class: 'u-full-width' %>
-  <% end %>
-  <%= haiku_form.submit %>
-<% end %>
+<div class="row">
+  <div class="two columns">
+    <p>Friends List</p>
+    <% if current_user && current_user.friends.any? %>
+      <% current_user.friends.each do |friend| %>
+        <li><%= friend.email %></li>
+      <% end %>
+    <% else %>
+      <p>No friends yet!</p>
+    <% end %>
+  </div>
+
+  <div class="ten columns">
+    <%= form_for @haiku do |haiku_form| %>
+      <%= haiku_form.fields_for :lines do |line_form| %>
+        <%= line_form.text_field :content, class: 'u-full-width' %>
+      <% end %>
+      <%= haiku_form.submit %>
+    <% end %>
+  </div>
+</div>
