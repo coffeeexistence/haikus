@@ -25,4 +25,8 @@ class User < ActiveRecord::Base
       self.password_hash = BCrypt::Engine.hash_secret(password, password_salt)
     end
   end
+
+  def forgot_password
+    update(forgot_password_uuid: SecureRandom.uuid)
+  end
 end

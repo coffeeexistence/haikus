@@ -19,6 +19,21 @@ class UsersController < ApplicationController
     head 204
   end
 
+  def forgot_password
+    @user = User.new
+  end
+
+  def enter_email
+    user = User.find_by(email: params[:user][:email])
+    if user
+      user.forgot_password
+      flash[:notice] = "You will receive an email shortly, with instructions on how to reset your password"
+      redirect_to root_path
+    else
+      redirect_to forgot_password_path
+    end
+  end
+
   private
 
   def user_params
