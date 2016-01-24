@@ -5,6 +5,7 @@ describe "user", type: :request do
   let(:existing_user) { FactoryGirl.create(:user) }
   let(:params) {{ user: { email: user.email, password: user.password, password_confirmation: user.password} } }
   let(:forgot_password_params) {{ user: {email: existing_user.email }}}
+  let(:invalid_email_forgot_password_params) {{ user: {email: 'wrong@g.com' }}}
 
   it "should render the html" do
     get '/sign_up'
@@ -36,6 +37,13 @@ describe "user", type: :request do
         patch '/enter_email', forgot_password_params
         expect(response.code).to eq("302")
         expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'not an existing user' do
+      it 'redirects to the forgot password page' do
+        patch '/enter_email', invalid_email_forgot_password_params
+        expect(response.code).to redirect_to(forgot_password_path)
       end
     end
   end
