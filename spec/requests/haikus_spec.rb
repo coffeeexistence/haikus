@@ -3,6 +3,9 @@ require 'rails_helper'
 describe "haikus", type: :request do
 
   let!(:user) { FactoryGirl.create(:user) }
+  let!(:user_with_friend) { FactoryGirl.create(:user)}
+  let!(:friend) { FactoryGirl.create(:user) }
+  let!(:friendship) { FactoryGirl.create(:friendship, user_id: user_with_friend.id, friend_id: friend.id) }
   let(:params) {{ email: user.email, password: user.password } }
 
   describe 'reading haikus' do
@@ -21,10 +24,35 @@ describe "haikus", type: :request do
   end
 
   describe 'writing haiku' do
-    it "should render the html" do
-      get '/haikus/new'
-      expect(response).to have_http_status(200)
-      expect(response).to render_template('new')
+    context 'when logged in and has friends' do
+      it "should render the html with emails of friends" do
+        post '/sessions', { email: user_with_friend.email, password: user_with_friend.password }
+        expect(response.code).to eq('302')
+        get '/haikus/new'
+        expect(response).to have_http_status(200)
+        expect(response.body).to include(user_with_friend.friends.first.email)
+        expect(response).to render_template('new')
+      end
+    end
+
+    context 'when logged in and has no friends' do
+      it "should render the html with no emails of friends" do
+        post '/sessions', params
+        expect(response.code).to eq('302')
+        get '/haikus/new'
+        expect(response).to have_http_status(200)
+        expect(response.body).to include('No friends yet!')
+        expect(response).to render_template('new')
+      end
+    end
+
+    context 'when logged out' do
+      it "should render the html with no emails of friends" do
+        get '/haikus/new'
+        expect(response).to have_http_status(200)
+        expect(response.body).to include('No friends yet!')
+        expect(response).to render_template('new')
+      end
     end
   end
 
