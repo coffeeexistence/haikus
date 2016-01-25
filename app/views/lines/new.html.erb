@@ -1,5 +1,15 @@
 <h1>lines#new page</h1>
 
+<% if @haiku.lines.last.errors.any? %>
+  <div class="error_messages">
+    <ul>
+      <% for error_message in @haiku.lines.last.errors.full_messages %>
+        <li><%= error_message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
 <% @haiku.lines.each do |line| %>
   <li><%= line.content %></li>
 <% end %>
