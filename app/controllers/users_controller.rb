@@ -19,6 +19,23 @@ class UsersController < ApplicationController
     head 204
   end
 
+  def forgot_password
+    @user = User.new
+  end
+
+  def enter_email
+    email_entered = params[:user][:email]
+    user = User.find_by(email: email_entered)
+    if user
+      user.forgot_password
+      flash[:notice] = "You will receive an email shortly, with instructions on how to reset your password"
+      redirect_to root_path
+    else
+      flash[:error] = "#{email_entered} is not associated with an account in our system. Enter a different email, or #{view_context.link_to('click here', sign_up_path)} to create an account.".html_safe
+      redirect_to forgot_password_path
+    end
+  end
+
   private
 
   def user_params
