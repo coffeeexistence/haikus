@@ -21,6 +21,8 @@ describe "lines", type: :request do
     end
 
     describe 'POST /haikus/:id/lines' do
+      before(:each) { post '/sessions', login_params }
+      
       it "should create a new line" do
         expect {
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "second line" }
@@ -53,6 +55,16 @@ describe "lines", type: :request do
         expect(haiku_with_lines.lines.count).to eq(3)
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(root_url)
+      end
+
+      it 'should stay on the new line page when a line is not created' do
+        post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
+        expect(response).to render_template(:new)
+      end
+
+      it 'should display an error message' do
+        post "/haikus/#{haiku.id}/lines", "line" => { "content"=> nil }
+        expect(response.body).to include("Content can&#39;t be blank")
       end
     end
   end

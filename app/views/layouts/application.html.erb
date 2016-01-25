@@ -24,6 +24,13 @@
         </div>
       </div>
     </div>
+    <% flash.each do |key, value| %>
+      <div class="error_messages">
+        <% if key == 'error' %>
+          <%= value %>
+        <% end %>
+      </div>
+    <% end %>
 
     <%= notice %>
     <%= yield %>
