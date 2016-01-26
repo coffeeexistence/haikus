@@ -8,7 +8,14 @@ Use the ticket id# to name branches in the following format:
 + feature/ticket_number-INITIALS
 + bugfix/ticket_number-INITIALS
 
-Push branch, open pull request, and "Finish" ticket on PivotalTracker
+Push branch.
+
+Open a pull request. In the pull request:
+
+title: branch name
+description: link to the Pivotal Tracker ticket, terse description of what the ticket covers
+
+Click "Finish" ticket on PivotalTracker
 
 Once PR is approved, merge PR and "Deliver" ticket on PivotalTracker
 
