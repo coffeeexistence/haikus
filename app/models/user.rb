@@ -1,6 +1,8 @@
 class User < ActiveRecord::Base
   has_many :friendships
   has_many :friends, :through => :friendships
+  has_many :haikus, -> { distinct }, :through => :lines
+  has_many :lines
 
   attr_accessor :password, :current_password
   validates_confirmation_of :password

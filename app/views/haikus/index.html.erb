@@ -2,6 +2,13 @@
 <div class="row">
   <div class="six columns">
     <h3>my haikus</h3>
+    <ul>
+    <% if current_user %>
+      <% current_user.haikus.each do |haiku| %>
+        <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li>
+      <% end %>
+    <% end %>
+   </ul>
   </div>
   <div class="six columns">
     <h3>all haikus</h3>
