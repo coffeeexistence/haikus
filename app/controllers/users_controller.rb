@@ -39,6 +39,7 @@ class UsersController < ApplicationController
     user = User.find_by(email: email_entered)
     if user
       user.forgot_password
+      UserMailer.reset_password(user.id.to_s).deliver_now
       flash[:notice] = "You will receive an email shortly, with instructions on how to reset your password"
       redirect_to root_path
     elsif email_entered.blank?

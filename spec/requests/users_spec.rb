@@ -38,13 +38,19 @@ describe "user", type: :request do
     end
 
     context 'existing user' do
+      before(:each) { patch '/enter_email', forgot_password_params }
+
       it 'saves a forgot password uuid to the user' do
-        patch '/enter_email', forgot_password_params
         expect(User.find_by(email: existing_user.email).forgot_password_uuid).not_to be_nil
       end
 
+      it 'sends a forgot password email' do
+        forgot_password_email = ActionMailer::Base.deliveries.last
+        recipient = forgot_password_email.to
+        expect(recipient).to include(existing_user.email)
+      end
+
       it 'redirects to the home page after user enters email address' do
-        patch '/enter_email', forgot_password_params
         expect(response.code).to eq("302")
         expect(response).to redirect_to(root_path)
       end
