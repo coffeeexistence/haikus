@@ -48,14 +48,24 @@ describe "user", type: :request do
     end
   end
 
-  it "should update user profile" do
-    updated_params = FactoryGirl.attributes_for(:user,
+  describe "updates profile" do
+    it "should update user profile" do
+      updated_params = FactoryGirl.attributes_for(:user,
       email: "update@factory.com",
       current_password: existing_user.password
-    )
-    put "/users/#{existing_user.id}", user: updated_params
-    expect(response.code).to eq("302")
-    expect(response).to redirect_to root_path
-    expect(existing_user.reload.email).to eq "update@factory.com"
+      )
+      put "/users/#{existing_user.id}", user: updated_params
+      expect(response.code).to eq("302")
+      expect(response).to redirect_to root_path
+      expect(existing_user.reload.email).to eq "update@factory.com"
+    end
+
+    it "should not update profile without current password" do
+      invalid_params = FactoryGirl.attributes_for(:user, email: "invalid@factory.com")
+      put "/users/#{existing_user.id}", user: invalid_params
+      expect(response.code).to eq("200")
+      expect(response).to render_template :edit
+      expect(existing_user.reload.email).to_not eq "invalid@factory.com"
+    end
   end
 end
