@@ -10,6 +10,13 @@
     <% else %>
       <p>No friends yet!</p>
     <% end %>
+
+    <% if current_user %>
+      <%= form_for current_user.friends.build, url: add_friend_path do |f| %>
+        <%= f.text_field :email, placeholder: "Friend's email", class: 'u-full-width'  %>
+        <%= f.submit 'Add Friend', class: ['u-full-width', 'button-primary'] %>
+      <% end %>
+    <% end %>
   </div>
 
   <div class="ten columns">

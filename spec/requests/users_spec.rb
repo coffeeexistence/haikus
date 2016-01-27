@@ -1,9 +1,11 @@
 require 'rails_helper'
 
 describe "user", type: :request do
-  let!(:user) { FactoryGirl.build(:user) }
+  let!(:new_user) { FactoryGirl.build(:user) }
+  let!(:login_user) { FactoryGirl.create(:user) }
   let(:existing_user) { FactoryGirl.create(:user) }
-  let(:params) {{ user: { email: user.email, password: user.password, password_confirmation: user.password} } }
+  let(:new_params) {{ user: { email: new_user.email, password: new_user.password, password_confirmation: new_user.password} } }
+  let(:login_params) { {email: login_user.email, password: login_user.password} }
   let(:forgot_password_params) {{ user: {email: existing_user.email }}}
   let(:invalid_email_forgot_password_params) {{ user: {email: 'wrong@g.com' }}}
 
@@ -13,10 +15,10 @@ describe "user", type: :request do
   end
 
   it "should create a user" do
-    post '/users', params
+    post '/users', new_params
     expect(response.code).to eq("302")
     expect(response).to redirect_to(root_path)
-    e = params[:user][:email]
+    e = new_params[:user][:email]
     expect(User.where(email: e).first.email).to eq(e)
   end
 
@@ -66,6 +68,41 @@ describe "user", type: :request do
       expect(response.code).to eq("200")
       expect(response).to render_template :edit
       expect(existing_user.reload.email).to_not eq "invalid@factory.com"
+    end
+  end
+
+  describe 'POST /add_friend' do
+    it "should not be allowed without login" do
+      post '/add_friend', user: {email: existing_user.email}
+      expect(response).to redirect_to(log_in_url)
+    end
+
+    context 'login user' do
+      before do
+        post '/sessions', login_params
+      end
+
+      it "should add a friendship with email of existing user" do
+        expect {
+          post '/add_friend', user: {email: existing_user.email}
+          expect(response).to have_http_status(302)
+        }.to change(Friendship, :count).by(1)
+        expect(login_user.reload.friends.to_a).to include(existing_user)
+      end
+
+      it "should add a user, and a friendship, with a new email" do
+        expect {
+          post '/add_friend', user: {email: "stranger@example.com"}
+        }.to change(User, :count).by(1).and change(Friendship, :count).by(1)
+        expect(login_user.reload.friends.where(email: "stranger@example.com")).to exist
+      end
+
+      it "should not add another friendship, with email of a friend" do
+        FactoryGirl.create(:friendship, user: login_user)
+        expect {
+          post '/add_friend', user: {email: login_user.friends.first.email}
+        }.not_to change(Friendship, :count)
+      end
     end
   end
 end

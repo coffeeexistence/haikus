@@ -22,7 +22,7 @@ describe "lines", type: :request do
 
     describe 'POST /haikus/:id/lines' do
       before(:each) { post '/sessions', login_params }
-      
+
       it "should create a new line" do
         expect {
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "second line" }
