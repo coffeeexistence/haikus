@@ -21,6 +21,15 @@ describe "haikus", type: :request do
       expect(response.body).to include(haikus.first.lines.first.content)
       expect(assigns[:haikus]).to match_array(haikus)
     end
+
+    context 'when logged in' do
+      it "should list user's haikus with title" do
+        post '/sessions', params
+        user.haikus.create(FactoryGirl.attributes_for(:haiku))
+        get '/haikus'
+        expect(response.body).to include(user.haikus.last.lines.first.content)
+      end
+    end
   end
 
   describe 'writing haiku' do
