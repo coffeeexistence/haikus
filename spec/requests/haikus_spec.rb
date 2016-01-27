@@ -3,9 +3,8 @@ require 'rails_helper'
 describe "haikus", type: :request do
 
   let!(:user) { FactoryGirl.create(:user) }
-  let!(:user_with_friend) { FactoryGirl.create(:user)}
-  let!(:friend) { FactoryGirl.create(:user) }
-  let!(:friendship) { FactoryGirl.create(:friendship, user_id: user_with_friend.id, friend_id: friend.id) }
+  let!(:user_with_friend) { FactoryGirl.create(:user_with_friend) }
+
   let(:params) {{ email: user.email, password: user.password } }
 
   describe 'reading haikus' do
@@ -32,7 +31,7 @@ describe "haikus", type: :request do
     end
   end
 
-  describe 'writing haiku' do
+  describe 'GET /haikus/new' do
     context 'when logged in and has friends' do
       it "should render the html with emails of friends" do
         post '/sessions', { email: user_with_friend.email, password: user_with_friend.password }
