@@ -20,3 +20,5 @@ production:
   host: localhost
   pool: 5
   timeout: 5000
+  username: <%= ENV["PG_USERNAME"] %>
+  password: <%= ENV["PG_PASSWORD"] %>
