@@ -1,4 +1,6 @@
 class UsersController < ApplicationController
+  before_action :require_login, only: [:add_friend]
+
   def new
     @user = User.new
   end
@@ -41,7 +43,6 @@ class UsersController < ApplicationController
   end
 
   def enter_email
-    email_entered = params[:user][:email]
     user = User.find_by(email: email_entered)
     if user
       user.forgot_password
@@ -53,9 +54,21 @@ class UsersController < ApplicationController
     end
   end
 
+  def add_friend
+    invited = User.find_or_create_by(email: email_entered) do |u|
+      u.password = u.password_confirmation = SecureRandom.base64(8)
+    end
+    current_user.friendships.find_or_create_by(friend: invited)
+    redirect_to new_haiku_url
+  end
+
   private
 
   def user_params
-  params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
+    params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
+  end
+
+  def email_entered
+    params.require(:user).permit(:email)[:email]
   end
 end

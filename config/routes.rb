@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   get "profile" => "users#edit", as: "profile"
   get "forgot_password" => "users#forgot_password", as: "forgot_password"
   patch "enter_email" => "users#enter_email", as: "enter_email"
+  post 'add_friend' => "users#add_friend"
 
   root :to => "main#index"
   resources :haikus do
