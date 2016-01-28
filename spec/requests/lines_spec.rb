@@ -28,7 +28,7 @@ describe "lines", type: :request do
           post "/haikus/#{haiku.id}/lines", "line" => { "content" => "second line" }
         }.to change(Line, :count).by(1)
         expect(response).to have_http_status(302)
-        expect(response).to redirect_to(root_url)
+        expect(response).to redirect_to(new_haiku_line_path(haiku))
       end
 
       it 'should not create a blank line' do

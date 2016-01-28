@@ -14,7 +14,8 @@ class LinesController < ApplicationController
     @line = @haiku.lines.build(line_params)
     @line.user = current_user
     if @line.save
-      redirect_to root_url, notice: "Haiku line created!"
+      flash[:notice] = "Haiku line created!"
+      redirect_to new_haiku_line_path(@haiku)
     else
       @count = @haiku.lines.count
       render 'new'
