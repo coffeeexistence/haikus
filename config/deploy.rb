@@ -4,7 +4,7 @@ lock '3.4.0'
 set :rvm_ruby_version, '2.3.0@haikus'
 set :application, 'haikus'
 set :repo_url, 'git@github.com:charliemcelfresh/haikus.git'
-
+# set :branch, "branch_name"
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
