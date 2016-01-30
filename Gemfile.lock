@@ -53,6 +53,7 @@ GEM
     capistrano-rvm (0.1.2)
       capistrano (~> 3.0)
       sshkit (~> 1.2)
+    chronic (0.10.2)
     concurrent-ruby (1.0.0)
     coveralls (0.8.10)
       json (~> 1.8)
@@ -153,6 +154,7 @@ GEM
       json (~> 1.4, >= 1.4.6)
       mustache (~> 0.99, >= 0.99.4)
       rspec (>= 3.0.0)
+    shoulda-whenever (0.0.1)
     simplecov (0.11.1)
       docile (~> 1.1.0)
       json (~> 1.8)
@@ -180,6 +182,8 @@ GEM
     unf (0.1.4)
       unf_ext
     unf_ext (0.0.7.1)
+    whenever (0.9.4)
+      chronic (>= 0.6.3)
 
 PLATFORMS
   ruby
@@ -198,9 +202,11 @@ DEPENDENCIES
   rails (= 4.2.5.1)
   rspec-rails (~> 3.0)
   rspec_api_documentation
+  shoulda-whenever (~> 0.0.1)
   simplecov
   spring
   sqlite3
+  whenever (~> 0.9.4)
 
 BUNDLED WITH
    1.11.2

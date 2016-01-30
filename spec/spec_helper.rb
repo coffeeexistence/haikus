@@ -1,5 +1,6 @@
 require 'simplecov'
 require 'coveralls'
+require 'rake'
 
 Coveralls.wear!
 
@@ -30,6 +31,8 @@ end
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 RSpec.configure do |config|
+  Rake.application.rake_require "tasks/db"
+  Rake::Task.define_task(:environment)
   # rspec-expectations config goes here. You can use an alternate
   # assertion/expectation library such as wrong or the stdlib/minitest
   # assertions if you prefer.
