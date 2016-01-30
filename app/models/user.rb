@@ -43,4 +43,12 @@ class User < ActiveRecord::Base
   def forgot_password
     update(forgot_password_uuid: SecureRandom.uuid)
   end
+
+  def friend_by_email(email)
+    friend = self.class.find_or_create_by(email: email) do |u|
+      u.password = u.password_confirmation = SecureRandom.base64(8)
+    end
+    self.friendships.find_or_create_by(friend: friend)
+    friend
+  end
 end

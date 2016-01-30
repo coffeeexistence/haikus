@@ -79,6 +79,14 @@ describe "haikus", type: :request do
         expect(Haiku.last.lines.first.user.email).to eq(user.email)
       end
 
+      it "should send an invite email" do
+        post '/sessions', params
+        expect {
+          post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=>"An afternoon breeze"}}},
+                          email: "test@example.com"
+        }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
       it 'should not add a new haiku without line content' do
         post '/sessions', params
         expect(response.code).to eq('302')

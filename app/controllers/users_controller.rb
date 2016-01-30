@@ -55,10 +55,7 @@ class UsersController < ApplicationController
   end
 
   def add_friend
-    invited = User.find_or_create_by(email: email_entered) do |u|
-      u.password = u.password_confirmation = SecureRandom.base64(8)
-    end
-    current_user.friendships.find_or_create_by(friend: invited)
+    invited = current_user.friend_by_email(email_entered)
     redirect_to new_haiku_url
   end
 
