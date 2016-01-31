@@ -35,6 +35,20 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def new_password
+    @user = User.find_by(forgot_password_uuid: params[:uuid])
+  end
+
+  def update_password
+    @user = User.find(params[:id])
+    if @user.update(user_params)
+      @user.remove_forgot_password_uuid
+      redirect_to root_path, notice: 'Password successfully updated'
+    else
+      render :new_password
+    end
+  end
+
   def enter_email
     user = User.find_by(email: email_entered)
     if user

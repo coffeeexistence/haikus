@@ -9,6 +9,7 @@ describe "user", type: :request do
   let(:login_params) { {email: login_user.email, password: login_user.password} }
   let(:forgot_password_params) {{ user: {email: existing_user.email }}}
   let(:empty_forgot_password_params) {{ user: {email: '' }}}
+  let(:new_password_params) {{ user: { password: existing_user.password, password_confirmation: existing_user.password }}}
   let(:invalid_email_forgot_password_params) {{ user: {email: 'wrong@g.com' }}}
 
   it "should render the html" do
@@ -38,10 +39,13 @@ describe "user", type: :request do
     end
 
     context 'existing user' do
-      before(:each) { patch '/enter_email', forgot_password_params }
+      before(:each) do
+        patch '/enter_email', forgot_password_params
+      end
 
       it 'saves a forgot password uuid to the user' do
-        expect(User.find_by(email: existing_user.email).forgot_password_uuid).not_to be_nil
+        user = User.find_by(email: existing_user.email)
+        expect(user.forgot_password_uuid).not_to be_nil
       end
 
       it 'sends a forgot password email' do
@@ -49,6 +53,24 @@ describe "user", type: :request do
         recipient = forgot_password_email.to
         expect(recipient).to include(existing_user.email)
       end
+
+      it 'renders the New Password template' do
+        user = User.find_by(email: existing_user.email)
+        get "/new_password/#{user.forgot_password_uuid}", new_password_params
+        expect(response).to render_template(:new_password)
+      end
+
+      it "updates the user's password" do
+        user = User.find_by(email: existing_user.email)
+        patch "/update_password/#{user.id}", new_password_params
+        expect(User.authenticate(user.email, new_password_params[:user][:password])).not_to be_nil
+      end
+
+      it 'removes the forgot password uuid after the user resets the password' do
+        user = User.find_by(email: existing_user.email)
+        patch "/update_password/#{user.id}", new_password_params
+        expect(User.find_by(email: existing_user.email).forgot_password_uuid).to be_nil
+      end      
 
       it 'redirects to the home page after user enters email address' do
         expect(response.code).to eq("302")

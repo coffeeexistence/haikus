@@ -14,9 +14,15 @@ Rails.application.configure do
   config.action_controller.perform_caching = false
 
   # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.raise_delivery_errors = true
   # Don't send emails in development environment - preview them in the browser
+  # using the letter_opener gem
   config.action_mailer.delivery_method = :letter_opener
+
+  config.action_mailer.default_url_options ||= {}
+  config.action_mailer.default_url_options[:protocol]= 'http'
+  config.action_mailer.default_url_options[:host] = 'local.haikus.com'
+  config.action_mailer.default_url_options[:port] = 3000
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
