@@ -6,6 +6,8 @@ gem 'rails', '4.2.5.1'
 gem 'bcrypt'
 gem 'figaro'
 gem 'rspec_api_documentation'
+gem 'whenever', '~> 0.9.4'
+gem 'shoulda-whenever', '~> 0.0.1'
 
 group :development, :test do
   gem 'spring'
