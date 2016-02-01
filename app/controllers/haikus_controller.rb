@@ -18,7 +18,8 @@ class HaikusController < ApplicationController
         invited = current_user.friend_by_email(email_entered)
         UserMailer.invite_email(invited, current_user, @haiku).deliver_now
       end
-      redirect_to root_url, notice: "Haiku created!"
+      flash[:notice] = "Haiku line created!"
+      redirect_to new_haiku_line_path(@haiku)
     else
       render "new"
     end
