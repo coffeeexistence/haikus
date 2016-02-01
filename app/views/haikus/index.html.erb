@@ -14,7 +14,9 @@
     <h3>all haikus</h3>
     <ul>
     <% @haikus.each do |haiku| %>
-      <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li>
+      <% unless haiku.lines_count_valid? %>
+        <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li><br>
+      <% end %>
     <% end %>
     </ul>
   </div>

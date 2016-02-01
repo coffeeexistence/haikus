@@ -15,7 +15,7 @@ describe "haikus", type: :request do
     end
 
     let!(:haikus) { FactoryGirl.create_list(:haiku_with_lines, 3) }
-    it "should list haikus with title" do
+    it "should list all completed haikus with title" do
       get '/haikus'
       expect(response.body).to include(haikus.first.lines.first.content)
       expect(assigns[:haikus]).to match_array(haikus)
