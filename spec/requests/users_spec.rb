@@ -87,7 +87,7 @@ describe "user", type: :request do
 
     context 'login user' do
       before do
-        post '/sessions', login_params
+        post '/log_in', login_params
       end
 
       it "should add a friendship with email of existing user" do
