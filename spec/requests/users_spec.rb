@@ -7,6 +7,7 @@ describe "user", type: :request do
   let(:new_params) {{ user: { email: new_user.email, password: new_user.password, password_confirmation: new_user.password} } }
   let(:login_params) { {email: login_user.email, password: login_user.password} }
   let(:forgot_password_params) {{ user: {email: existing_user.email }}}
+  let(:empty_forgot_password_params) {{ user: {email: '' }}}
   let(:invalid_email_forgot_password_params) {{ user: {email: 'wrong@g.com' }}}
 
   it "should render the html" do
@@ -39,6 +40,13 @@ describe "user", type: :request do
         patch '/enter_email', forgot_password_params
         expect(response.code).to eq("302")
         expect(response).to redirect_to(root_path)
+      end
+    end
+
+    context 'left the email field blank' do
+      it 'redirects to the forgot password page' do
+        patch '/enter_email', empty_forgot_password_params
+        expect(response.code).to redirect_to(forgot_password_path)
       end
     end
 
