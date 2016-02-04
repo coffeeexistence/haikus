@@ -16,12 +16,12 @@ describe "lines", type: :request do
 
   context 'when logged in' do
     before do
-      post '/sessions', login_params
+      post '/log_in', login_params
       expect(response).to have_http_status(302)
     end
 
     describe 'POST /haikus/:id/lines' do
-      before(:each) { post '/sessions', login_params }
+      before(:each) { post '/log_in', login_params }
 
       it "should create a new line" do
         expect {

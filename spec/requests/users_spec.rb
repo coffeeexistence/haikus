@@ -23,10 +23,16 @@ describe "user", type: :request do
     expect(User.where(email: e).first.email).to eq(e)
   end
 
+  it "should not create a user with error" do
+    post '/users', user: { email: "", password: "", password_confirmation: ""}
+    expect(response).to render_template('new')
+    expect(response.body).to include("Form is invalid")
+  end
+
   describe 'forgot password' do
     it 'navigates to the forgot password page' do
       get '/forgot_password'
-      expect(response.code ).to eq("200")
+      expect(response.code).to eq("200")
       expect(response).to render_template(:forgot_password)
     end
 
@@ -59,6 +65,18 @@ describe "user", type: :request do
   end
 
   describe "updates profile" do
+    it "should render html of edit form" do
+      get "/users/#{existing_user.id}/edit"
+      expect(response).to redirect_to(root_path)
+      follow_redirect!
+      expect(response.body).to include("Please log in before proceeding")
+
+      post '/log_in', login_params
+      get "/users/#{existing_user.id}/edit"
+      expect(response).to have_http_status(200)
+      expect(response).to render_template('edit')
+    end
+
     it "should update user profile" do
       updated_params = FactoryGirl.attributes_for(:user,
       email: "update@factory.com",
@@ -87,7 +105,7 @@ describe "user", type: :request do
 
     context 'login user' do
       before do
-        post '/sessions', login_params
+        post '/log_in', login_params
       end
 
       it "should add a friendship with email of existing user" do
