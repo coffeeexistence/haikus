@@ -31,13 +31,6 @@ class UsersController < ApplicationController
     end
   end
 
-  def destroy
-    user = User.find_by(id: params[:id])
-    user.destroy
-
-    head 204
-  end
-
   def forgot_password
     @user = User.new
   end

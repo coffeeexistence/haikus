@@ -23,7 +23,7 @@ describe "haikus", type: :request do
 
     context 'when logged in' do
       it "should list user's haikus with title" do
-        post '/sessions', params
+        post '/log_in', params
         user.haikus.create(FactoryGirl.attributes_for(:haiku))
         get '/haikus'
         expect(response.body).to include(user.haikus.last.lines.first.content)
@@ -34,7 +34,7 @@ describe "haikus", type: :request do
   describe 'GET /haikus/new' do
     context 'when logged in and has friends' do
       it "should render the html with emails of friends" do
-        post '/sessions', { email: user_with_friend.email, password: user_with_friend.password }
+        post '/log_in', { email: user_with_friend.email, password: user_with_friend.password }
         expect(response.code).to eq('302')
         get '/haikus/new'
         expect(response).to have_http_status(200)
@@ -45,7 +45,7 @@ describe "haikus", type: :request do
 
     context 'when logged in and has no friends' do
       it "should render the html with no emails of friends" do
-        post '/sessions', params
+        post '/log_in', params
         expect(response.code).to eq('302')
         get '/haikus/new'
         expect(response).to have_http_status(200)
@@ -68,7 +68,7 @@ describe "haikus", type: :request do
 
     context 'when logged in' do
       before do
-        post '/sessions', params
+        post '/log_in', params
         expect(response).to have_http_status(302)
       end
 
@@ -83,7 +83,6 @@ describe "haikus", type: :request do
       end
 
       it "should send an invite email" do
-        post '/sessions', params
         expect {
           post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=>"An afternoon breeze"}}},
                           email: "test@example.com"
