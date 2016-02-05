@@ -3,8 +3,9 @@ require 'rails_helper'
 describe "user", type: :request do
   let!(:new_user) { FactoryGirl.build(:user) }
   let!(:login_user) { FactoryGirl.create(:user) }
+  let!(:word) { FactoryGirl.create(:word) }
   let(:existing_user) { FactoryGirl.create(:user) }
-  let(:new_params) {{ user: { email: new_user.email, password: new_user.password, password_confirmation: new_user.password} } }
+  let(:new_params) {{ user: { username: new_user.username, email: new_user.email, password: new_user.password, password_confirmation: new_user.password} } }
   let(:login_params) { {email: login_user.email, password: login_user.password} }
   let(:forgot_password_params) {{ user: {email: existing_user.email }}}
   let(:empty_forgot_password_params) {{ user: {email: '' }}}
@@ -24,7 +25,7 @@ describe "user", type: :request do
   end
 
   it "should not create a user with error" do
-    post '/users', user: { email: "", password: "", password_confirmation: ""}
+    post '/users', user: { username: "", email: "", password: "", password_confirmation: ""}
     expect(response).to render_template('new')
     expect(response.body).to include("Form is invalid")
   end

@@ -4,7 +4,7 @@ describe "haikus", type: :request do
 
   let!(:user) { FactoryGirl.create(:user) }
   let!(:user_with_friend) { FactoryGirl.create(:user_with_friend) }
-
+  let!(:word) { FactoryGirl.create(:word) }
   let(:params) {{ email: user.email, password: user.password } }
 
   describe 'reading haikus' do
@@ -112,6 +112,23 @@ describe "haikus", type: :request do
         }.to change(Haiku, :count).by(0)
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(log_in_url)
+      end
+    end
+
+    context 'when inviting a friend to write a haiku' do
+      before do
+        post '/log_in', params
+      end
+
+      it 'should have a username if friend is already a user' do
+        post '/add_friend', user: { email: user.email }
+        expect(user.reload.friends.last.username).to eq(user.username)
+      end
+
+      it 'should generate a random username if friend is not already a user' do
+        expect(User.all.where(email: "friend@example.com")).to_not exist
+        post '/add_friend', user: { email: "friend@email.com" }
+        expect(user.reload.friends.last.username).to eq(word.word)
       end
     end
   end
