@@ -13,20 +13,19 @@
     <%= f.label :email %>
     <%= f.text_field :email %>
   </p>
+  <h5>Update Password</h5>
   <p>
-    <%= f.label :password %>
+    <%= f.label :current_password %>
+    <%= f.password_field :current_password %>
+  </p>
+  <p>
+    <%= f.label :new_password %>
     <%= f.password_field :password %>
   </p>
   <p>
-    <%= f.label :password_confirmation %>
+    <%= f.label :confirm_new_password %>
     <%= f.password_field :password_confirmation %>
   </p>
-  <% if @user.id %>
-    <p>
-      <%= f.label :current_password %>
-      <i>(we need your current password to confirm your changes)</i><br />
-      <%= f.password_field :current_password %>
-    </p>
-  <% end %>
-  <p><%= f.submit @user.id ? "Update Profile" : "Sign up", class: "button-primary" %></p>
+
+  <p><%= f.submit "Update Profile", class: "button-primary" %></p>
 <% end %>
