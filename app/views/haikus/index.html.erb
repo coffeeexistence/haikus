@@ -8,7 +8,18 @@
         <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li>
       <% end %>
     <% end %>
-   </ul>
+    </ul>
+    <ul>
+    <% if params[:scope_param] == "complete" %>
+      <li><%= link_to 'All', haikus_path(scope_param: "") %></li>
+      <li><%= link_to 'In progress', haikus_path(scope_param: "in progress") %></li>
+    <% elsif params[:scope_param] == "in progress" %>
+      <li><%= link_to 'Complete', haikus_path(scope_param: "complete") %></li>
+      <li><%= link_to 'All', haikus_path(scope_param: "") %></li>
+    <% else %>
+      <li><%= link_to 'Complete', haikus_path(scope_param: "complete") %></li>
+      <li><%= link_to 'In progress', haikus_path(scope_param: "in progress") %></li>
+    <% end %>
   </div>
   <div class="six columns">
     <h3>all haikus</h3>

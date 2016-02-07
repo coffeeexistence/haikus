@@ -3,6 +3,19 @@ class Haiku < ActiveRecord::Base
   accepts_nested_attributes_for :lines
   validates :lines, presence: true
 
+  #scope :complete, -> { includes(:lines).where( self.lines.count = 3) }
+
+  #scope :in_progress, -> {includes(:lines).where( self.lines.size < 3)}
+
+  def self.complete
+    joins(:lines).where( :lines.size = 3 )
+  end
+
+  def self.in_progress
+    joins(:lines).where(lines.size = 3)
+  end
+
+
   def title
     lines.first.content
   end

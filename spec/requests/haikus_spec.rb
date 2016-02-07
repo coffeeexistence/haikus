@@ -22,11 +22,39 @@ describe "haikus", type: :request do
     end
 
     context 'when logged in' do
+
+      before(:each) do
+        post '/sessions', params
+        @haiku1 = user.haikus.create(FactoryGirl.attributes_for(:haiku))
+        @haiku2 = user.haikus.create(FactoryGirl.attributes_for(:haiku))
+        @haiku2.update(lines_attributes:[{user: user, content:"second line"}, {user: user, content:"third line"}])
+      end
+
       it "should list user's haikus with title" do
-        post '/log_in', params
-        user.haikus.create(FactoryGirl.attributes_for(:haiku))
-        get '/haikus'
+        get '/haikus' 
         expect(response.body).to include(user.haikus.last.lines.first.content)
+      end
+
+      it "display an complete link and in progress link" do
+        get '/haikus'
+        expect(response.body).to include("complete")
+        expect(response.body).to include("In progress")
+      end
+
+      it "should display only complete haikus when the complete link is clicked, complete can not be clicked now" do
+        get '/haikus', {:scope_param => 'complete'}
+        expect(response.body).not_to include("complete")
+        expect(response.body).to include("all")
+        expect(response.body).to include(@haiku2.lines.first.content)
+        expect(response.body).not_to include(@haiku1.lines.first.content)
+      end
+
+      it "should display only haikus in progress when the in progress link is clicked, in progress can not be clicked now" do
+        get '/haikus', {:scope_param => 'In progress'}
+        expect(response.body).to include("all")
+        expect(response.body).not_to include("In progress")
+        expect(response.body).to include(@haiku1.lines.first.content)
+        expect(response.body).not_to include(@haiku2.lines.first.content)
       end
     end
   end
