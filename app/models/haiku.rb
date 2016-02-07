@@ -8,11 +8,11 @@ class Haiku < ActiveRecord::Base
   #scope :in_progress, -> {includes(:lines).where( self.lines.size < 3)}
 
   def self.complete
-    joins(:lines).where( :lines.size = 3 )
+    joins(:lines).where( :lines => { :id => 3 } )
   end
 
   def self.in_progress
-    joins(:lines).where(lines.size = 3)
+    joins(:lines).select("COUNT(lines) < 3")
   end
 
 
