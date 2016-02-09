@@ -1,24 +1,22 @@
 <h1>haikus#index page</h1>
 <div class="row">
   <div class="six columns">
-    <h3>my haikus</h3>
-    <ul>
     <% if current_user %>
-      <% current_user.haikus.each do |haiku| %>
-        <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li>
-      <% end %>
-    <% end %>
-    </ul>
-    <ul>
-    <% if params[:scope_param] == "complete" %>
-      <li><%= link_to 'All', haikus_path(scope_param: "") %></li>
-      <li><%= link_to 'In progress', haikus_path(scope_param: "in progress") %></li>
-    <% elsif params[:scope_param] == "in progress" %>
-      <li><%= link_to 'Complete', haikus_path(scope_param: "complete") %></li>
-      <li><%= link_to 'All', haikus_path(scope_param: "") %></li>
-    <% else %>
-      <li><%= link_to 'Complete', haikus_path(scope_param: "complete") %></li>
-      <li><%= link_to 'In progress', haikus_path(scope_param: "in progress") %></li>
+      <div id="menu">
+        <h3>my haikus</h3>
+        <ul>
+          <% @my_haiku = current_user.haikus.send("#{params[:scope_param]}") %>
+          <li><%= link_to "#{@scopes.first.sub("_", " ")}", haikus_path(scope_param: "#{@scopes.first}") %></li>
+          <li><%= link_to "#{@scopes.last.sub("_", " ")}", haikus_path(scope_param: "#{@scopes.last}") %></li>
+        </ul>
+      </div>
+      <div>
+        <ul>
+          <% @my_haiku.each do |haiku| %>
+            <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li>
+          <% end %>
+        </ul>
+      </div>
     <% end %>
   </div>
   <div class="six columns">

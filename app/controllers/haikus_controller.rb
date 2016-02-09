@@ -3,8 +3,7 @@ class HaikusController < ApplicationController
 
   def index
     @haikus = Haiku.all
-    @haikus = Haiku.complete if params[:scope_param] == "complete"
-    @haikus = Haiku.in_progress if params[:scope_param] == "in progress"
+    @scopes = ["complete", "in_progress", "all"] - ["#{params[:scope_param]}"]
   end
 
   def new
