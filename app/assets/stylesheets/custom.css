@@ -22,4 +22,14 @@ a {
 
 .u-full-width {
   width: 100%;
-  box-sizing: border-box; }
+  box-sizing: border-box;
+}
+
+.logo {
+  font-size: 1.75em;
+  font-weight: bolder;
+  left: 1em;
+  position: absolute;
+  text-transform: uppercase;
+  top: 0.75em;
+}
