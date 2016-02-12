@@ -5,13 +5,13 @@
       <div id="menu">
         <h3>my haikus</h3>
         <ul>
-          <% @my_haiku = current_user.haikus.send("#{params[:scope_param]}") %>
+          <% @my_haiku = current_user.haikus.send("#{params[:scope_param]}".sub(" ", "_")) %>
           <li><%= link_to "#{@scopes.first.sub("_", " ")}", haikus_path(scope_param: "#{@scopes.first}") %></li>
           <li><%= link_to "#{@scopes.last.sub("_", " ")}", haikus_path(scope_param: "#{@scopes.last}") %></li>
         </ul>
       </div>
       <div>
-        <ul>
+        <ul class="my_haikus">
           <% @my_haiku.each do |haiku| %>
             <li><%= link_to haiku.title, new_haiku_line_path(haiku) %></li>
           <% end %>

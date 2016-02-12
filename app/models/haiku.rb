@@ -4,15 +4,15 @@ class Haiku < ActiveRecord::Base
   validates :lines, presence: true
 
   def self.complete
-    joins(:lines).where( :lines => { :id => 3 } )
+    where( id: complete_id )
   end
 
   def self.in_progress
     self.all - self.complete
   end
 
-  def lines_complete?
-    lines.count = 3
+  def self.complete_id
+    Line.group(:haiku_id).count.select { |key, value| value == 3 }.keys
   end
 
   def title

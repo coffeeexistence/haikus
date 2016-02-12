@@ -8,6 +8,7 @@ describe "haikus", type: :request do
   let(:params) {{ email: user.email, password: user.password } }
 
   describe 'reading haikus' do
+    
     it "should render haikus index template" do
       get '/haikus'
       expect(response).to have_http_status(200)
@@ -24,10 +25,10 @@ describe "haikus", type: :request do
     context 'when logged in' do
 
       before(:each) do
-        post '/sessions', params
-        @haiku1 = user.haikus.create(FactoryGirl.attributes_for(:haiku))
-        @haiku2 = user.haikus.create(FactoryGirl.attributes_for(:haiku))
-        @haiku2.update(lines_attributes:[{user: user, content:"second line"}, {user: user, content:"third line"}])
+        post '/log_in', params
+        post '/haikus', haiku: {"lines_attributes"=>{"1"=>{"content"=> "2"}}}
+        post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=> "4"}}}
+        user.haikus.last.update(lines_attributes:[{user: user, content:"second line"}, {user: user, content:"third line"}])
       end
 
       it "should list user's haikus with title" do
@@ -38,23 +39,23 @@ describe "haikus", type: :request do
       it "display an complete link and in progress link" do
         get '/haikus'
         expect(response.body).to include("complete")
-        expect(response.body).to include("In progress")
+        expect(response.body).to include("in progress")
       end
 
       it "should display only complete haikus when the complete link is clicked, complete can not be clicked now" do
         get '/haikus', {:scope_param => 'complete'}
         expect(response.body).not_to include("complete")
         expect(response.body).to include("all")
-        expect(response.body).to include(@haiku2.lines.first.content)
-        expect(response.body).not_to include(@haiku1.lines.first.content)
+        expect(Haiku.complete).to include(user.haikus.last)
+        expect(Haiku.complete).not_to include(user.haikus.first)
       end
 
       it "should display only haikus in progress when the in progress link is clicked, in progress can not be clicked now" do
-        get '/haikus', {:scope_param => 'In progress'}
+        get '/haikus', {:scope_param => 'in progress'}
         expect(response.body).to include("all")
-        expect(response.body).not_to include("In progress")
-        expect(response.body).to include(@haiku1.lines.first.content)
-        expect(response.body).not_to include(@haiku2.lines.first.content)
+        expect(response.body).not_to include("in progress")
+        expect(Haiku.in_progress).to include(user.haikus.first)
+        expect(Haiku.in_progress).not_to include(user.haikus.last)
       end
     end
   end
