@@ -8,6 +8,7 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password
   validates_presence_of :password, on: :create
   validates_presence_of :email
+  validates_presence_of :username
   validates_uniqueness_of :email
   validate :current_password_is_correct, on: :update
 
@@ -47,6 +48,7 @@ class User < ActiveRecord::Base
   def friend_by_email(email)
     friend = self.class.find_or_create_by(email: email) do |u|
       u.password = u.password_confirmation = SecureRandom.base64(8)
+      u.username = Word.random_words
     end
     self.friendships.find_or_create_by(friend: friend)
     friend
