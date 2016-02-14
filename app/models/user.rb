@@ -11,7 +11,6 @@ class User < ActiveRecord::Base
   validates_presence_of :username
   validates_uniqueness_of :email
   validate :current_password_is_correct, on: :update
-
   before_save :encrypt_password
 
   def self.authenticate(email, password)
