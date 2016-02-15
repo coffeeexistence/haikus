@@ -1,0 +1,9 @@
+<div id="navbar">
+  <ul>
+    <li><%= link_to_unless_current("All Haikus", { controller: 'haikus', action: 'index'}) %></li>
+    <% if current_user %>
+      <li><%= link_to_unless_current("My Haikus", { controller: 'haikus', action: 'index'}) %></li>
+    <% end %>
+    <li><%= link_to_unless_current("Create a Haiku", { controller: 'haikus', action: 'new'}) %></li>
+  </ul>
+</div>
