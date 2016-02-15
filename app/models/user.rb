@@ -8,7 +8,7 @@ class User < ActiveRecord::Base
   validates_confirmation_of :password
   validates_presence_of :password, on: :create
   validates_presence_of :email
-  validates_presence_of :username
+  validates_presence_of :username, on: :create
   validates_uniqueness_of :email
   validate :current_password_is_correct, on: :update
   before_save :encrypt_password
