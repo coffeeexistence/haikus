@@ -9,6 +9,10 @@ gem 'rspec_api_documentation'
 gem 'whenever', '~> 0.9.4'
 gem 'shoulda-whenever', '~> 0.0.1'
 
+group :development do
+  gem 'letter_opener', '~> 1.4.1'
+end
+
 group :development, :test do
   gem 'spring'
   gem 'byebug'
