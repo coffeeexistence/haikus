@@ -3,11 +3,13 @@ require 'rails_helper'
 describe "user", type: :request do
   let!(:new_user) { FactoryGirl.build(:user) }
   let!(:login_user) { FactoryGirl.create(:user) }
+  let!(:word) { FactoryGirl.create(:word) }
   let(:existing_user) { FactoryGirl.create(:user) }
-  let(:new_params) {{ user: { email: new_user.email, password: new_user.password, password_confirmation: new_user.password} } }
+  let(:new_params) {{ user: { username: new_user.username, email: new_user.email, password: new_user.password, password_confirmation: new_user.password} } }
   let(:login_params) { {email: login_user.email, password: login_user.password} }
   let(:forgot_password_params) {{ user: {email: existing_user.email }}}
   let(:empty_forgot_password_params) {{ user: {email: '' }}}
+  let(:new_password_params) {{ user: { password: existing_user.password, password_confirmation: existing_user.password }}}
   let(:invalid_email_forgot_password_params) {{ user: {email: 'wrong@g.com' }}}
 
   it "should render the html" do
@@ -24,7 +26,7 @@ describe "user", type: :request do
   end
 
   it "should not create a user with error" do
-    post '/users', user: { email: "", password: "", password_confirmation: ""}
+    post '/users', user: { username: "", email: "", password: "", password_confirmation: ""}
     expect(response).to render_template('new')
     expect(response.body).to include("Form is invalid")
   end
@@ -37,13 +39,40 @@ describe "user", type: :request do
     end
 
     context 'existing user' do
-      it 'saves a forgot password uuid to the user' do
+      before(:each) do
         patch '/enter_email', forgot_password_params
-        expect(User.find_by(email: existing_user.email).forgot_password_uuid).not_to be_nil
       end
 
+      it 'saves a forgot password uuid to the user' do
+        user = User.find_by(email: existing_user.email)
+        expect(user.forgot_password_uuid).not_to be_nil
+      end
+
+      it 'sends a forgot password email' do
+        forgot_password_email = ActionMailer::Base.deliveries.last
+        recipient = forgot_password_email.to
+        expect(recipient).to include(existing_user.email)
+      end
+
+      it 'renders the New Password template' do
+        user = User.find_by(email: existing_user.email)
+        get "/new_password/#{user.forgot_password_uuid}", new_password_params
+        expect(response).to render_template(:new_password)
+      end
+
+      it "updates the user's password" do
+        user = User.find_by(email: existing_user.email)
+        patch "/update_password/#{user.id}", new_password_params
+        expect(User.authenticate(user.email, new_password_params[:user][:password])).not_to be_nil
+      end
+
+      it 'removes the forgot password uuid after the user resets the password' do
+        user = User.find_by(email: existing_user.email)
+        patch "/update_password/#{user.id}", new_password_params
+        expect(User.find_by(email: existing_user.email).forgot_password_uuid).to be_nil
+      end      
+
       it 'redirects to the home page after user enters email address' do
-        patch '/enter_email', forgot_password_params
         expect(response.code).to eq("302")
         expect(response).to redirect_to(root_path)
       end

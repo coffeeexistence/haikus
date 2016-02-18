@@ -32,4 +32,15 @@ a {
   position: absolute;
   text-transform: uppercase;
   top: 0.75em;
+  box-sizing: border-box; }
+
+#navbar ul {
+  padding-left: 17em;
+  margin: 0;
+}
+
+#navbar ul li {
+  display: inline-block;
+  padding: 0.75em 2em;
+  margin: 0;
 }

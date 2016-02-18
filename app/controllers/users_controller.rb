@@ -35,10 +35,30 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
+  def new_password
+    @user = User.find_by(forgot_password_uuid: params[:uuid])
+  end
+
+  def update_password
+    @user = User.find(params[:id])
+    if password_is_blank?
+      flash[:error] = 'New password cannot be blank'
+      redirect_to new_password_path(@user.forgot_password_uuid) and return
+    end
+    
+    if @user.update(user_params)
+      @user.remove_forgot_password_uuid
+      redirect_to root_path, notice: 'Password successfully updated'
+    else
+      render :new_password
+    end
+  end
+
   def enter_email
     user = User.find_by(email: email_entered)
     if user
       user.forgot_password
+      UserMailer.reset_password(user.id.to_s).deliver_now
       flash[:notice] = "You will receive an email shortly, with instructions on how to reset your password"
       redirect_to root_path
     elsif email_entered.blank?
@@ -58,10 +78,14 @@ class UsersController < ApplicationController
   private
 
   def user_params
-    params.require(:user).permit(:email, :password, :password_confirmation, :current_password)
+    params.require(:user).permit(:username, :email, :password, :password_confirmation, :current_password)
   end
 
   def email_entered
     params.require(:user).permit(:email)[:email]
+  end
+
+  def password_is_blank?
+    params[:user][:password] == ''
   end
 end

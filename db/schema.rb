@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(version: 20160206193757) do
     t.datetime "created_at",           null: false
     t.datetime "updated_at",           null: false
     t.string   "forgot_password_uuid"
+    t.string   "username"
   end
 
   create_table "words", force: :cascade do |t|

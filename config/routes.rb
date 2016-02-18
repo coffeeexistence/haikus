@@ -5,8 +5,10 @@ Rails.application.routes.draw do
   get "log_out" => "sessions#destroy", as: "log_out"
   get "profile" => "users#edit", as: "profile"
   get "forgot_password" => "users#forgot_password", as: "forgot_password"
+  get "new_password/:uuid" => "users#new_password", as: "new_password"
   patch "enter_email" => "users#enter_email", as: "enter_email"
   post 'add_friend' => "users#add_friend"
+  patch "update_password/:id" => "users#update_password", as: "update_password"
 
   root :to => "main#index"
   resources :haikus do
