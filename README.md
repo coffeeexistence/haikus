@@ -45,9 +45,11 @@ http://ec2-52-34-168-78.us-west-2.compute.amazonaws.com
 ####AWS Deployment Dev Access
 If you are an authorized dev for this project and want to do production deployment on the AWS instance, do the following through your console/terminal:
 
-1. Generate ssh key pair `ssh-keygen if username`  note: swap username with something of your choice, I usually use my local account name, if unsure do `whoami` and use the name returned to generate your ssh key pair.
+1. Generate ssh key pair `ssh-keygen -f username`  note: swap username with something of your choice, I usually use my local account name, if unsure do `whoami` and use the name returned to generate your ssh key pair.
 2.  2 files are created, a public key file and a private key file (**username.pub** and **username** respectively). note on macs the private key file has no file extension but on some operating systems it may be **username.pem**
-3. Add the private key to your keychain: `ssh-add username`
+3. Add the private key to your keychain: 
+	`ssh-add -K username` If you are on the mac and would like to let the key persist through reboots. For Linux you will have to find out how to make the key persist.
+	`ssh-add username` If you don't want it to persist.
 4. Send your username.pub to the AWS admin (Richard, find him on Hipchat) and he will add you.
 5. After you are added. from a console/terminal at the root of the Haikus project, run `cap production deploy`
 6. You can also now ssh into AWS via `ssh haikus@ec2-52-34-168-78.us-west-2.compute.amazonaws.com`
@@ -85,16 +87,17 @@ sudo swapon /swap
 ####AWS Adding Dev Access
 Before we continue on, this section focuses on administration of how to add user dev access to the AWS instance. A prerequisite is to do steps 1~4 of **AWS Deployment Dev Access**
 #####Local Host
-1. `scp username.pub ubuntu@ec2-52-34-168-78.us-west-2.compute.amazonaws.com`
+1. `scp username.pub ubuntu@ec2-52-34-168-78.us-west-2.compute.amazonaws.com:/tmp`
 
 #####AWS
 1. Login to AWS as **haikus** (you may need to login as ubuntu first and then switch user to haikus)
 2. We want to make a .ssh folder if it doesn't already exist and put the public key sent over into **authorized_key**
-   ```sh
-   cd ~haikus
-   mkdir .ssh
-   cat /tmp/username.pub >> .ssh/authorized_keys
-   ```
+
+	```sh
+	cd ~haikus
+	mkdir .ssh
+	cat /tmp/username.pub >> .ssh/authorized_keys
+	```
 
 #####Local Host
 1. Setup is now complete. You can try `ssh haikus@ec2-52-34-168-78.us-west-2.compute.amazonaws.com`
@@ -152,33 +155,38 @@ Local Host
 	bundle install
 	```
 6. Update **config/deploy/production.rb**, add the following line at the top: 
+	
 	```sh
 	server 'ec2-52-34-168-78.us-west-2.compute.amazonaws.com', user: 'haikus', roles: %w{app db web}
 	```
 7. Within **config/environments/production.rb**, find the following and comment it out so it looks like the following: `# config.assets.js_compressor = :uglifier`
 So with this particular project we dont have any js and once we deploy, with precompiling the system wants to use uglifier but we dont have that gem in the gemfile. Since we are not using it, just comment it out.
 8. Within **config/initializers/database.yml**, add the following to production:
+	
 	```sh
 	username: <%= ENV["PG_USERNAME"] %>
 	password: <%= ENV["PG_PASSWORD"] %>
-  	```
+	```
 
 #####AWS
 1. Login as **haikus**. Remember the rvm gemset? We are going to need that here. I'm going to just quickly describe what you'll have to do, but basically on your local host you need to export that gemset. Take the export file and load it onto AWS (scp or whatever else). And then you use rvm to import it in. I'll let you google to victory here but make sure that rvm is using the same version of Ruby and using the same gemset.
 2. Install Postgres: 
-```sh
-sudo apt-get install postgresql
-sudo apt-get install libpq-dev
-```
+	
+	```sh
+	sudo apt-get install postgresql
+	sudo apt-get install libpq-dev
+	```
 3. Create Postgres user according to **database.yml**: 
-```sh
-$ sudo -u postgres psql
-create user paid_programmer with password 'password';
-alter role paid_programmer superuser createrole createdb replication;
-create database haikus_production owner paid_programmer;
-create user haikus with password 'password';
-alter role haikus superuser createrole createdb replication;
-```
+	
+	```sh
+	$ sudo -u postgres psql
+	create user paid_programmer with password 'password';
+	alter role paid_programmer superuser createrole createdb replication;
+	create database haikus_production owner paid_programmer;
+	create user haikus with password 'password';
+	alter role haikus superuser createrole createdb replication;
+	```
+	
 	Note: the last time I did this I didn't have to create a role for the deployment account but this time I had to. Had errors where Capistrano wanted to use haikus to do stuff so I created haikus role and everything worked out after that.
 4. Update pg_hba.conf file. `sudo nano /etc/postgresql/9.3/main/pg_hba.conf`
    Find the following and set methods to **trust**
@@ -209,7 +217,7 @@ server {
         root /var/www/your_app_name_here/current/public;
         .....
 ```
-Comment out all html paths within the server block. Make sure you do this because they have a higher presedence than your application's routes!!!
+Comment out all html paths within the server block. Make sure you do this because they have a higher precedence than your application's routes!!!
 7. Create `/var/www/` via `sudo mkdir` and then do `sudo chown -R haikus /var/www`  When you deploy later the application will live here.
 
 #####Local Host
