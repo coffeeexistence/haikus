@@ -1,14 +1,12 @@
 require 'rails_helper'
 
 describe "haikus", type: :request do
-
   let!(:user) { FactoryGirl.create(:user) }
   let!(:user_with_friend) { FactoryGirl.create(:user_with_friend) }
   let!(:word) { FactoryGirl.create(:word) }
   let(:params) {{ email: user.email, password: user.password } }
 
-  describe 'reading haikus' do
-    
+  describe 'reading haikus' do   
     it "should render haikus index template" do
       get '/haikus'
       expect(response).to have_http_status(200)
@@ -23,7 +21,6 @@ describe "haikus", type: :request do
     end
 
     context 'when logged in' do
-
       before(:each) do
         post '/log_in', params
         post '/haikus', haiku: {"lines_attributes"=>{"1"=>{"content"=> "2"}}}
@@ -94,7 +91,6 @@ describe "haikus", type: :request do
   end
 
   describe 'POST /haikus' do
-
     context 'when logged in' do
       before do
         post '/log_in', params

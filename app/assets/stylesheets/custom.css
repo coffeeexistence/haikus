@@ -47,20 +47,20 @@ a {
 
 #menu ul
 {
-    margin-bottom: 25px;
-    padding: 0;
+  margin-bottom: 25px;
+  padding: 0;
 }
 
 #menu ul li
 {
-    list-style-type: none;
-    display: inline;
+  list-style-type: none;
+  display: inline;
 }
 
 #menu li:before {
-content: " | ";
+  content: " | ";
 }
 
 #menu li:first-child:before {
-content: none;
+  content: none;
 }
