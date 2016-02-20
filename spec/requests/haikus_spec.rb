@@ -6,7 +6,7 @@ describe "haikus", type: :request do
   let!(:word) { FactoryGirl.create(:word) }
   let(:params) {{ email: user.email, password: user.password } }
 
-  describe 'reading haikus' do   
+  describe 'reading haikus' do
     it "should render haikus index template" do
       get '/haikus'
       expect(response).to have_http_status(200)
