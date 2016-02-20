@@ -2,7 +2,9 @@ class HaikusController < ApplicationController
   before_action :require_login, only: [:create]
 
   def index
+    params[:scope_param] ||= "all"
     @haikus = Haiku.all
+    @scopes = ["complete", "in_progress", "all"] - ["#{params[:scope_param]}"]
   end
 
   def new

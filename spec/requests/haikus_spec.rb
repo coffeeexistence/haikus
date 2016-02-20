@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe "haikus", type: :request do
-
   let!(:user) { FactoryGirl.create(:user) }
   let!(:user_with_friend) { FactoryGirl.create(:user_with_friend) }
   let!(:word) { FactoryGirl.create(:word) }
@@ -22,11 +21,38 @@ describe "haikus", type: :request do
     end
 
     context 'when logged in' do
-      it "should list user's haikus with title" do
+      before(:each) do
         post '/log_in', params
-        user.haikus.create(FactoryGirl.attributes_for(:haiku))
-        get '/haikus'
+        post '/haikus', haiku: {"lines_attributes"=>{"1"=>{"content"=> "2"}}}
+        post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=> "4"}}}
+        user.haikus.last.update(lines_attributes:[{user: user, content:"second line"}, {user: user, content:"third line"}])
+      end
+
+      it "should list user's haikus with title" do
+        get '/haikus' 
         expect(response.body).to include(user.haikus.last.lines.first.content)
+      end
+
+      it "display an complete link and in progress link" do
+        get '/haikus'
+        expect(response.body).to include("complete")
+        expect(response.body).to include("in progress")
+      end
+
+      it "should display only complete haikus when the complete link is clicked, complete can not be clicked now" do
+        get '/haikus', {:scope_param => 'complete'}
+        expect(response.body).not_to include("complete")
+        expect(response.body).to include("all")
+        expect(Haiku.complete).to include(user.haikus.last)
+        expect(Haiku.complete).not_to include(user.haikus.first)
+      end
+
+      it "should display only haikus in progress when the in progress link is clicked, in progress can not be clicked now" do
+        get '/haikus', {:scope_param => 'in progress'}
+        expect(response.body).to include("all")
+        expect(response.body).not_to include("in progress")
+        expect(Haiku.in_progress).to include(user.haikus.first)
+        expect(Haiku.in_progress).not_to include(user.haikus.last)
       end
     end
   end
@@ -65,7 +91,6 @@ describe "haikus", type: :request do
   end
 
   describe 'POST /haikus' do
-
     context 'when logged in' do
       before do
         post '/log_in', params
