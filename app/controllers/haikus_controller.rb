@@ -4,6 +4,7 @@ class HaikusController < ApplicationController
   def index
     params[:scope_param] ||= "all"
     @haikus = Haiku.all
+    @my_haikus = current_user ? current_user.haikus.send("#{params[:scope_param]}") : []
     @scopes = ["complete", "in_progress", "all"] - ["#{params[:scope_param]}"]
   end
 
