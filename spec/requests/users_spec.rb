@@ -95,13 +95,13 @@ describe "user", type: :request do
 
   describe "updates profile" do
     it "should render html of edit form" do
-      get "/users/#{existing_user.id}/edit"
+      get "/profile"
       expect(response).to redirect_to(root_path)
       follow_redirect!
       expect(response.body).to include("Please log in before proceeding")
 
       post '/log_in', login_params
-      get "/users/#{existing_user.id}/edit"
+      get "/profile"
       expect(response).to have_http_status(200)
       expect(response).to render_template('edit')
     end
