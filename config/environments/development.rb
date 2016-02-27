@@ -21,7 +21,7 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options ||= {}
   config.action_mailer.default_url_options[:protocol]= 'http'
-  config.action_mailer.default_url_options[:host] = 'local.haikus.com'
+  config.action_mailer.default_url_options[:host] = 'localhost'
   config.action_mailer.default_url_options[:port] = 3000
 
   # Print deprecation notices to the Rails logger.
