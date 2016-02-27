@@ -47,6 +47,7 @@ class UsersController < ApplicationController
     end
     
     if @user.update(user_params)
+      session[:user_id] = @user.id
       @user.remove_forgot_password_uuid
       redirect_to root_path, notice: 'Password successfully updated'
     else

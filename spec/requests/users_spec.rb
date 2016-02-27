@@ -76,6 +76,12 @@ describe "user", type: :request do
         expect(response.code).to eq("302")
         expect(response).to redirect_to(root_path)
       end
+
+      it 'automatically logs in user after password reset' do
+        user = User.find_by(email: existing_user.email)
+        patch "/update_password/#{user.id}", new_password_params
+        expect(session[:user_id]).to eq(user.id)
+      end
     end
 
     context 'left the email field blank' do
