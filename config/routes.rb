@@ -15,6 +15,6 @@ Rails.application.routes.draw do
     resources :lines, only: [:index, :new, :create, :update, :show, :destroy]
   end
   resources :main, only: [:index]
-  resources :users, except: [:index, :show]
+  resources :users, except: [:index, :show, :edit]
   resources :sessions, only: [:create, :new, :destroy]
 end
