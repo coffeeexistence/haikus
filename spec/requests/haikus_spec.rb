@@ -156,5 +156,22 @@ describe "haikus", type: :request do
         expect(user.reload.friends.last.username).to eq(word.word)
       end
     end
+
+    context 'when invited friend clicks link' do
+      before do
+        post '/log_in', params
+        post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=>"An afternoon breeze"}}},
+                          email: "invited_user@email.com"
+      end
+
+      it 'should give invited friend a session' do
+        get "#{response.header['Location']}?user=#{user.friends.last.password_salt}"
+        expect(session[:user_id]).to eq(user.friends.last.id)
+      end
+
+      it "should redirect invited friend to the haiku author's create haiku form" do
+        expect(response).to redirect_to(new_haiku_line_path(Haiku.last))
+      end
+    end
   end
 end
