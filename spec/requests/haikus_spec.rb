@@ -35,22 +35,22 @@ describe "haikus", type: :request do
 
       it "display an complete link and in progress link" do
         get '/haikus'
-        expect(response.body).to include("complete")
-        expect(response.body).to include("in progress")
+        expect(response.body).to include("Complete")
+        expect(response.body).to include("In progress")
       end
 
       it "should display only complete haikus when the complete link is clicked, complete can not be clicked now" do
         get '/haikus', {:scope_param => 'complete'}
-        expect(response.body).not_to include("complete")
-        expect(response.body).to include("all")
+        expect(response.body).not_to include("Complete")
+        expect(response.body).to include("All")
         expect(Haiku.complete).to include(user.haikus.last)
         expect(Haiku.complete).not_to include(user.haikus.first)
       end
 
       it "should display only haikus in progress when the in progress link is clicked, in progress can not be clicked now" do
-        get '/haikus', {:scope_param => 'in progress'}
-        expect(response.body).to include("all")
-        expect(response.body).not_to include("in progress")
+        get '/haikus', {:scope_param => 'in_progress'}
+        expect(response.body).to include("All")
+        expect(response.body).not_to include("In progress")
         expect(Haiku.in_progress).to include(user.haikus.first)
         expect(Haiku.in_progress).not_to include(user.haikus.last)
       end

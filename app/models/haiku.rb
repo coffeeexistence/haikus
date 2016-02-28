@@ -4,14 +4,14 @@ class Haiku < ActiveRecord::Base
   validates :lines, presence: true
 
   def self.complete
-    where( id: complete_id )
+    where(id: complete_ids)
   end
 
   def self.in_progress
-    self.all - self.complete
+    where.not(id: complete_ids)
   end
 
-  def self.complete_id
+  def self.complete_ids
     Line.group(:haiku_id).count.select { |key, value| value == 3 }.keys
   end
 
