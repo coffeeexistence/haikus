@@ -3,7 +3,7 @@ class UserMailer < ApplicationMailer
 
   def invite_email(invited, user, haiku)
     @user = user
-    @url = new_haiku_line_url(haiku)
+    @url = new_haiku_line_url(haiku, :user => invited.password_salt)
     mail(to: invited.email, subject: "Come write Haiku")
   end
 

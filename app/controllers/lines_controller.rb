@@ -5,6 +5,10 @@ class LinesController < ApplicationController
     @haiku = Haiku.find(params[:haiku_id])
     @count = @haiku.lines.count
     @line = Line.new
+    if params[:user].present?
+      invited = User.where(password_salt:params[:user])
+      session[:user_id] = invited.last.id
+    end
   end
 
   def create
