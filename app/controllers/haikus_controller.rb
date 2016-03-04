@@ -17,7 +17,7 @@ class HaikusController < ApplicationController
     @haiku = Haiku.new(haiku_params)
     @haiku.lines.last.user = current_user
     if @haiku.save
-      if email_entered
+      unless email_entered.empty?
         invited = current_user.friend_by_email(email_entered)
         UserMailer.invite_email(invited, current_user, @haiku).deliver_now
       end
