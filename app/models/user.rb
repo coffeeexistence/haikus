@@ -53,7 +53,7 @@ class User < ActiveRecord::Base
       u.password = u.password_confirmation = SecureRandom.base64(8)
       u.username = Word.random_words
     end
-    self.friendships.find_or_create_by(friend: friend)
+    self.friends << friend
     friend
   end
 end

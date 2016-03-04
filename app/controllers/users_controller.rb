@@ -73,6 +73,7 @@ class UsersController < ApplicationController
 
   def add_friend
     invited = current_user.friend_by_email(email_entered)
+    invited.friends << current_user
     redirect_to new_haiku_url
   end
 
