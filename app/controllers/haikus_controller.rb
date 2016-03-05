@@ -16,15 +16,18 @@ class HaikusController < ApplicationController
   def create
     @haiku = Haiku.new(haiku_params)
     @haiku.lines.last.user = current_user
-    if @haiku.save
-      unless email_entered.empty?
+    unless email_entered.empty?
+      if @haiku.save
         invited = current_user.friend_by_email(email_entered)
         UserMailer.invite_email(invited, current_user, @haiku).deliver_now
+        flash[:notice] = "Haiku line created!"
+        redirect_to new_haiku_line_path(@haiku)
+      else
+        render :new
       end
-      flash[:notice] = "Haiku line created!"
-      redirect_to new_haiku_line_path(@haiku)
     else
-      render "new"
+      flash.now[:error] = "Email cannot be blank."
+      render :new
     end
   end
 
