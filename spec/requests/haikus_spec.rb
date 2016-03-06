@@ -174,4 +174,49 @@ describe "haikus", type: :request do
       end
     end
   end
+
+  let(:haiku_with_lines) { FactoryGirl.create(:haiku_with_lines) }
+  describe 'GET /haikus/edit' do
+    before do
+      post '/log_in', params
+    end
+
+    it "should render the edit form with haiku's lines in place" do
+      get "/haikus/#{haiku_with_lines.id}/edit"
+      expect(response).to have_http_status(200)
+      expect(response).to render_template('edit')
+      expect(response.body).to include(haiku_with_lines.lines.all.first.content)
+      expect(response.body).to include(haiku_with_lines.lines.all.second.content)
+      expect(response.body).to include(haiku_with_lines.lines.all.third.content)
+    end
+  end
+
+  describe 'PATCH /haikus' do
+    before do
+      post '/log_in', params
+    end
+
+    it "should update haiku with new line content" do
+      patch "/haikus/#{haiku_with_lines.id}", haiku: {"lines_attributes"=>{"0"=>{"content"=>"updated first line", "id"=>"1"},
+                                                                           "1"=>{"content"=>"updated second line", "id"=>"2"},
+                                                                           "2"=>{"content"=>"updated third line", "id"=>"3"}}}
+      expect(haiku_with_lines.lines.all.first.content).to eq("updated first line")
+      expect(haiku_with_lines.lines.all.second.content).to eq("updated second line")
+      expect(haiku_with_lines.lines.all.third.content).to eq("updated third line")
+      expect(response).to have_http_status(302)
+      expect(response).to redirect_to(haiku_path(haiku_with_lines))
+      expect(flash[:notice]).to eq("Your haiku is completed!")
+    end
+  end
+
+  describe 'GET /haikus/:id' do
+    it "should show completed haiku" do
+      get "/haikus/#{haiku_with_lines.id}"
+      expect(response).to have_http_status(200)
+      expect(response).to render_template('show')
+      expect(response.body).to include(haiku_with_lines.lines.all.first.content)
+      expect(response.body).to include(haiku_with_lines.lines.all.second.content)
+      expect(response.body).to include(haiku_with_lines.lines.all.third.content)
+    end
+  end
 end

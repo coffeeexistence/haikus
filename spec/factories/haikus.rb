@@ -12,5 +12,11 @@ FactoryGirl.define do
         create_list(:line, 2, haiku: haiku)
       end
     end
+
+    factory :haiku_with_line do
+      after(:create) do |haiku, evaluator|
+        create_list(:line, 1, haiku: haiku)
+      end
+    end
   end
 end
