@@ -143,26 +143,27 @@ describe "user", type: :request do
         post '/log_in', login_params
       end
 
-      it "should add a friendship with email of existing user" do
+      it "should create a two way friendship with email of existing user" do
         expect {
           post '/add_friend', user: {email: existing_user.email}
           expect(response).to have_http_status(302)
-        }.to change(Friendship, :count).by(1)
+        }.to change(Friendship, :count).by(2)
         expect(login_user.reload.friends.to_a).to include(existing_user)
       end
 
-      it "should add a user, and a friendship, with a new email" do
+      it "should add a user, and create a two way friendship, with a new email" do
         expect {
           post '/add_friend', user: {email: "stranger@example.com"}
-        }.to change(User, :count).by(1).and change(Friendship, :count).by(1)
+        }.to change(User, :count).by(1).and change(Friendship, :count).by(2)
         expect(login_user.reload.friends.where(email: "stranger@example.com")).to exist
       end
 
       it "should not add another friendship, with email of a friend" do
         FactoryGirl.create(:friendship, user: login_user)
+        login_user.friends << existing_user
         expect {
-          post '/add_friend', user: {email: login_user.friends.first.email}
-        }.not_to change(Friendship, :count)
+          post '/add_friend', user: {email: existing_user.email}
+        }.to raise_error.and change(Friendship, :count).by(0)
       end
     end
   end
