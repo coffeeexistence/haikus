@@ -160,9 +160,8 @@ describe "user", type: :request do
 
       it "should not add another friendship, with email of a friend" do
         FactoryGirl.create(:friendship, user: login_user)
-        login_user.friends << existing_user
         expect {
-          post '/add_friend', user: {email: existing_user.email}
+          post '/add_friend', user: {email: login_user.friends.first.email}
         }.to raise_error.and change(Friendship, :count).by(0)
       end
     end
