@@ -17,9 +17,12 @@ class LinesController < ApplicationController
 
     @line = @haiku.lines.build(line_params)
     @line.user = current_user
-    if @line.save
+    if @line.save && @haiku.lines_count_valid?
       flash[:notice] = "Haiku line created!"
       redirect_to new_haiku_line_path(@haiku)
+    elsif !@haiku.lines_count_valid?
+      flash[:notice] = "You can edit your haiku before you complete it."
+      redirect_to edit_haiku_path(@haiku)
     else
       @count = @haiku.lines.count
       render 'new'

@@ -1,0 +1,8 @@
+<h1>Haiku's Edit</h1>
+
+<%= form_for @haiku do |f| %>
+  <%= f.fields_for :lines do |builder| %>
+    <%= builder.text_field :content, class: 'u-full-width' %>
+  <% end %>
+  <%= f.submit "Submit", class: 'button-primary' %>
+<% end %>

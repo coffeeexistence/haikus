@@ -1,5 +1,5 @@
 class HaikusController < ApplicationController
-  before_action :require_login, only: [:create]
+  before_action :require_login, only: [:create, :edit, :update]
 
   def index
     params[:scope_param] ||= "all"
@@ -28,10 +28,28 @@ class HaikusController < ApplicationController
     end
   end
 
+  def edit
+    @haiku = Haiku.find(params[:id])
+  end
+
+  def update
+    @haiku = Haiku.find(params[:id])
+    if @haiku.update(haiku_params)
+      flash[:notice] = "Your haiku is completed!"
+      redirect_to haiku_path(@haiku)
+    else
+      render :edit
+    end
+  end
+
+  def show
+    @haiku = Haiku.find(params[:id])
+  end
+
   private
 
   def haiku_params
-    params.require(:haiku).permit(lines_attributes: [:content])
+    params.require(:haiku).permit(lines_attributes: [:id, :content])
   end
 
   def email_entered

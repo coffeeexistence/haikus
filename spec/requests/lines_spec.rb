@@ -45,7 +45,16 @@ describe "lines", type: :request do
         expect(Line.last.user).not_to be_nil
       end
 
-      let!(:haiku_with_lines) { FactoryGirl.create(:haiku_with_lines) }
+      let(:haiku_with_line) { FactoryGirl.create(:haiku_with_line) }
+      it "should redirect to haiku edit template when adding third line" do
+        expect(haiku_with_line.lines.count).to eq(2)
+        post "/haikus/#{haiku_with_line.id}/lines", "line" => { "content" => "third line" }
+        expect(response).to have_http_status(302)
+        expect(response).to redirect_to(edit_haiku_path(haiku_with_line))
+        expect(flash[:notice]).to eq("You can edit your haiku before you complete it.")
+      end
+
+      let(:haiku_with_lines) { FactoryGirl.create(:haiku_with_lines) }
       it 'should not add more than 3 lines' do
         expect(haiku_with_lines.lines.count).to eq(3)
         expect(haiku_with_lines).to_not be_lines_count_valid
