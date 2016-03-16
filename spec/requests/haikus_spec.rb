@@ -5,6 +5,8 @@ describe "haikus", type: :request do
   let!(:user_with_friend) { FactoryGirl.create(:user_with_friend) }
   let!(:word) { FactoryGirl.create(:word) }
   let(:params) {{ email: user.email, password: user.password } }
+  let(:update_params) {{ haiku: {"lines_attributes"=>{"0"=>{"content"=>"updated first line", "id"=>"1"}, "1"=>{"content"=>"updated second line", "id"=>"2"}, "2"=>{"content"=>"updated third line", "id"=>"3"}}} }}
+  let(:update_params_with_same_user_id) {{ haiku: {"lines_attributes"=>{"0"=>{"content"=>"same first same", "id"=>"1", "user_id" => "9"}, "1"=>{"content"=>"same second same", "id"=>"2", "user_id" => "9"}, "2"=>{"content"=>"same third same", "id"=>"3", "user_id" => "9"}}} }}
 
   describe 'reading haikus' do
     it "should render haikus index template" do
@@ -197,16 +199,31 @@ describe "haikus", type: :request do
     end
 
     it "should update haiku with new line content" do
-      patch "/haikus/#{haiku_with_lines.id}", haiku: {"lines_attributes"=>{"0"=>{"content"=>"updated first line", "id"=>"1"},
-                                                                           "1"=>{"content"=>"updated second line", "id"=>"2"},
-                                                                           "2"=>{"content"=>"updated third line", "id"=>"3"}}}
+      patch "/haikus/#{haiku_with_lines.id}", update_params
       expect(haiku_with_lines.lines.all.first.content).to eq("updated first line")
       expect(haiku_with_lines.lines.all.second.content).to eq("updated second line")
       expect(haiku_with_lines.lines.all.third.content).to eq("updated third line")
       expect(response).to have_http_status(302)
       expect(response).to redirect_to(haiku_path(haiku_with_lines))
-      expect(flash[:notice]).to eq("Your haiku is completed!")
     end
+
+    context "when haiku is written with no friends" do
+      it "should show standard flash message" do
+        patch "/haikus/#{haiku_with_lines.id}", update_params_with_same_user_id
+        expect(flash[:notice]).to eq("Your haiku is completed")
+      end
+    end
+
+    # context "when haiku is written with a friend" do
+    # end
+
+    context "when haiku is written with two friends" do
+      it "should show a flash message with friend's email" do
+        patch "/haikus/#{haiku_with_lines.id}", update_params
+        expect(flash[:notice]).to eq("Your haiku is completed, and a copy of it was sent to #{User.where(id: haiku_with_lines.lines.all.first.user_id).first.email} and #{User.where(id: haiku_with_lines.lines.all.second.user_id).first.email}")
+      end
+    end
+
   end
 
   describe 'GET /haikus/:id' do

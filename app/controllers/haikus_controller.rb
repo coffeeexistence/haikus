@@ -35,8 +35,16 @@ class HaikusController < ApplicationController
   def update
     @haiku = Haiku.find(params[:id])
     if @haiku.update(haiku_params)
-      flash[:notice] = "Your haiku is completed!"
-      redirect_to haiku_path(@haiku)
+      if @haiku.wrote_with_friends?
+        flash[:notice] = "Your haiku is completed, and a copy of it was sent to #{@haiku.friends[0].email} and #{@haiku.friends[1].email}"
+        redirect_to haiku_path(@haiku)
+      elsif @haiku.wrote_with_friend?
+        flash[:notice] = "Your haiku is completed, and a copy of it was sent to #{@haiku.friend.email}"
+        redirect_to haiku_path(@haiku)
+      else
+        flash[:notice] = "Your haiku is completed!"
+        redirect_to haiku_path(@haiku)
+      end
     else
       render :edit
     end
