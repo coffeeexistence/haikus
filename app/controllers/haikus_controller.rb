@@ -18,11 +18,15 @@ class HaikusController < ApplicationController
     @haiku.lines.last.user = current_user
     if @haiku.save
       if !email_entered.blank?
-        invited = current_user.friend_by_email(email_entered)
-        UserMailer.invite_email(invited, current_user, @haiku).deliver_now
+        begin
+          invited = current_user.friend_by_email(email_entered)
+          UserMailer.invite_email(invited, current_user, @haiku).deliver_now
+          flash[:notice] = "Haiku line created!"
+        rescue Net::SMTPFatalError => e
+          flash[:notice] = "Friend was not invited due to invalid email!"
+        end
       end
-      flash[:notice] = "Haiku line created!"
-      redirect_to new_haiku_line_path(@haiku)
+     redirect_to new_haiku_line_path(@haiku)
     else
       render "new"
     end
