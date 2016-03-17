@@ -107,11 +107,18 @@ describe "haikus", type: :request do
         expect(Haiku.last.lines.first.user.email).to eq(user.email)
       end
 
-      it "should send an invite email" do
+      it "should send an invite email if friend is invited" do
         expect {
           post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=>"An afternoon breeze"}}},
                           email: "test@example.com"
         }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      end
+
+      it 'should not send an invite email if invited friend is blank' do
+        expect {
+          post '/haikus', haiku: {"lines_attributes"=>{"0"=>{"content"=>"An afternoon breeze"}}},
+                          email: ""
+        }.to change { ActionMailer::Base.deliveries.count }.by(0)
       end
 
       it 'should not add a new haiku without line content' do
