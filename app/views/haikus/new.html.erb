@@ -2,16 +2,11 @@
 
 <div class="row">
   <div class="two columns">
-    <p>Friends List</p>
-    <% if current_user && current_user.friends.any? %>
-      <% current_user.friends.each do |friend| %>
-        <li><%= friend.email %></li>
-      <% end %>
-    <% else %>
-      <p>No friends yet!</p>
-    <% end %>
 
-    <% if current_user %>
+    <%= render partial: 'friends_list', locals: {user: current_user} %> 
+
+    <% if logged_in? %>
+      <hr>
       <%= form_for current_user.friends.build, url: add_friend_path do |f| %>
         <%= f.text_field :email, placeholder: "Friend's email", class: 'u-full-width'  %>
         <%= f.submit 'Add Friend', class: ['u-full-width', 'button-primary'] %>
@@ -19,8 +14,11 @@
     <% end %>
   </div>
 
+
   <div class="ten columns">
     <%= form_for @haiku do |haiku_form| %>
+
+      <%= haiku_form.label "Lines:" %>
       <%= haiku_form.fields_for :lines do |line_form| %>
         <%= line_form.text_field :content, class: 'u-full-width' %>
       <% end %>

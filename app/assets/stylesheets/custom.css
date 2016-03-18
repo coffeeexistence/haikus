@@ -64,3 +64,15 @@ a {
 #menu li:first-child:before {
   content: none;
 }
+
+.friends-list {
+  display:block;
+}
+
+.friends-list-title {
+  font-size: 1.5em;
+}
+
+.slim-hr {
+  margin: 1px 0px 5px 0px;
+}

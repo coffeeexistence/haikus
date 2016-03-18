@@ -84,7 +84,7 @@ describe "haikus", type: :request do
       it "should render the html with no emails of friends" do
         get '/haikus/new'
         expect(response).to have_http_status(200)
-        expect(response.body).to include('No friends yet!')
+        expect(response.body).to include('You must be logged in to have friends!')
         expect(response).to render_template('new')
       end
     end

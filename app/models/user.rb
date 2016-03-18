@@ -58,4 +58,8 @@ class User < ActiveRecord::Base
     self.friendships.find_or_create_by(friend: friend)
     friend
   end
+
+  def has_friends?
+    self.friends.any?
+  end
 end

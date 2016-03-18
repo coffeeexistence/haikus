@@ -1,0 +1,29 @@
+<div class="friends-list">
+  <div class="friends-list-title">Friends List:</div>
+    <% if logged_in? %>
+
+      <% if user.has_friends? %>
+        <table>
+          <thead>
+          <tr>
+            <th>Email:</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            <% user.friends.each do |friend| %>
+              <tr>
+                <th><%= friend.email %></th>
+              <tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>No friends yet!</p>
+      <% end %>
+
+    <% else %>
+      <p>You must be logged in to have friends!</p>
+    <% end %>
+
+</div>

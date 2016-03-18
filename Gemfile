@@ -16,6 +16,7 @@ end
 group :development, :test do
   gem 'spring'
   gem 'byebug'
+  gem 'pry' # Not redundant as pry is capable of debugging within views, unlike byebug.
   gem 'factory_girl_rails'
   gem 'rspec-rails', '~> 3.0'
   gem 'sqlite3'
