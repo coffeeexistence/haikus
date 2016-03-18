@@ -203,33 +203,33 @@ So with this particular project we dont have any js and once we deploy, with pre
 5. Install git: `sudo apt-get install git`
 6. Setup github access, add another key to your account: https://help.github.com/articles/generating-ssh-keys/
 7. Update nginx configuration: `sudo nano /opt/nginx/conf/nginx.conf`
-```sh
-server {
+	```sh
+	server {
 
-        listen       80;
+	        listen       80;
 
-        server_name  put_your_aws_instance_public_DNS_here;
+	        server_name  put_your_aws_instance_public_DNS_here;
 
-        passenger_enabled on;
+	        passenger_enabled on;
 
-        rails_env production;
+	        rails_env production;
 
-        root /var/www/your_app_name_here/current/public;
-        .....
-```
-Comment out all html paths within the server block. Make sure you do this because they have a higher precedence than your application's routes!!!
-7. Create `/var/www/` via `sudo mkdir` and then do `sudo chown -R haikus /var/www`  When you deploy later the application will live here.
+	        root /var/www/your_app_name_here/current/public;
+	        .....
+	```
+	Comment out all html paths within the server block. Make sure you do this because they have a higher precedence than your application's routes!!!
+8. Create `/var/www/` via `sudo mkdir` and then do `sudo chown -R haikus /var/www`  When you deploy later the application will live here.
 
 #####Local Host
 1.  Create a new **secret_key_base**, use cmd `rake secret` and then copy the output key
 
 #####Remote Host
-1. Edit `~/.profile` go to the end of the file and add in 
-	```sh
+1. Edit `~/.profile` go to the end of the file and add in
+```sh
 	export SECRET_KEY_BASE = paste_the_secret_key_generated_from_local_host_here
 	export PG_USERNAME=paid_programmer
 	export PG_PASSWORD=password
-	```
+```
 2. `source ~/.profile` and use `echo $ENV_VAR_NAME` and make sure those 3 variables above exist.
 3. Restart nginx `sudo service nginx restart`
 
